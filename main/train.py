@@ -1,7 +1,7 @@
 import sys
 # 使用絕對路徑強制 E:\DACAD 進入搜尋路徑
 # 確保 E:\\DACAD 是您專案的正確路徑
-sys.path.insert(0, 'E:\\DACAD') 
+sys.path.insert(0, 'D:\\DACAD') 
 import os
 import numpy as np
 import random
