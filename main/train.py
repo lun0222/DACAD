@@ -1,5 +1,7 @@
 import sys
-sys.path.append("..")
+# 使用絕對路徑強制 E:\DACAD 進入搜尋路徑
+# 確保 E:\\DACAD 是您專案的正確路徑
+sys.path.insert(0, 'E:\\DACAD') 
 import os
 import numpy as np
 import random
@@ -40,6 +42,9 @@ def main(args):
             log("AUPRC score is : %.4f " % (metrics_pred["avg_prc"]))
             log("Best F1 score is : %.4f " % (metrics_pred["best_f1"]))
         elif dataset_type == "boiler":
+            log("AUPRC score is : %.4f " % (metrics_pred["avg_prc"]))
+            log("Best F1 score is : %.4f " % (metrics_pred["best_f1"]))
+        elif dataset_type == "hvac": # <-- 新增 HVAC
             log("AUPRC score is : %.4f " % (metrics_pred["avg_prc"]))
             log("Best F1 score is : %.4f " % (metrics_pred["best_f1"]))
         else:
@@ -172,6 +177,8 @@ def main(args):
                         cur_val_score = metrics_pred_val_src["best_f1"]
                     elif dataset_type == "smd":
                         cur_val_score = metrics_pred_val_trg["best_f1"]
+                    elif dataset_type == "hvac": # <-- 新增 HVAC
+                        cur_val_score = metrics_pred_val_trg["best_f1"] # 以 Target F1 為標準
                     else:
                         cur_val_score = metrics_pred_val_src["mac_f1"]
 

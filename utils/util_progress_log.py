@@ -22,6 +22,7 @@ def get_logger(log_file):
 dict_metrics = {"smd": {"acc": accuracy_score, "mac_f1": f1_score, "w_f1": f1_score},
                 "msl": {"acc": accuracy_score, "mac_f1": f1_score, "w_f1": f1_score},
                 "boiler": {"acc": accuracy_score, "mac_f1": f1_score, "w_f1": f1_score},
+                "hvac": {"acc": accuracy_score, "mac_f1": f1_score, "w_f1": f1_score}, # <-- 新增 HVAC
                 }
 
 
@@ -32,6 +33,8 @@ def get_dataset_type(args):
         return "msl"
     elif "Boiler" in args.path_src:
         return "boiler"
+    elif "HVAC" in args.path_src: # <-- 新增 HVAC
+        return "hvac"
     else:
         return "sensor"
 
@@ -102,6 +105,8 @@ class PredictionMeter(object):
         elif self.dataset_type == "msl":
             output_np = output.detach().cpu().numpy().flatten()
         elif self.dataset_type == "boiler":
+            output_np = output.detach().cpu().numpy().flatten()
+        elif self.dataset_type == "hvac": # <-- 新增 HVAC
             output_np = output.detach().cpu().numpy().flatten()
         else:
             output_np = output.detach().cpu().numpy().argmax(axis=1).flatten()
@@ -252,5 +257,3 @@ def write_to_tensorboard(writer, progress, count_step, split_type="train", task=
             if split_type == "val":
                 writer.add_scalar('KAPPA_Source_Pred/' + split_type, kappa_s, count_step)
                 writer.add_scalar('KAPPA_Target_Pred/' + split_type, kappa_t, count_step)
-
-

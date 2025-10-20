@@ -1,16 +1,18 @@
 import sys
-sys.path.append("..")
+# 使用絕對路徑強制 E:\DACAD 進入搜尋路徑
+# 確保 E:\\DACAD 是您專案的正確路徑
+sys.path.insert(0, 'E:\\DACAD')
 import os
 import numpy as np
 import math
 import torch
 import torch.nn as nn
 from utils.dataset import get_output_dim
-from utils.mlp import MLP
-from utils.tcn_no_norm import TemporalConvNet
-from utils.augmentations import Augmenter, concat_mask
-from utils.util_progress_log import AverageMeter, PredictionMeter, get_dataset_type
-from utils.loss import PredictionLoss, SupervisedContrastiveLoss
+from utils.mlp import MLP 
+from utils.tcn_no_norm import TemporalConvNet 
+from utils.augmentations import Augmenter, concat_mask 
+from utils.util_progress_log import AverageMeter, PredictionMeter, get_dataset_type 
+from utils.loss import PredictionLoss, SupervisedContrastiveLoss 
 from models.dacad import DACAD_NN
 import torch.nn.functional as F
 from sklearn.metrics import accuracy_score
@@ -53,6 +55,8 @@ class Base_Algorithm(nn.Module):
             self.main_pred_metric = "avg_prc"
         elif self.dataset_type == "boiler":
             self.main_pred_metric = "avg_prc"
+        elif self.dataset_type == "hvac": # <-- 新增 HVAC
+            self.main_pred_metric = "avg_prc"
         #If it is sensor data, we will use Macro f1
         else:
             self.main_pred_metric = "mac_f1"
@@ -88,6 +92,8 @@ class Base_Algorithm(nn.Module):
         elif self.dataset_type == "msl":
             return AverageMeter('ROC AUC', ':6.2f')
         elif self.dataset_type == "boiler":
+            return AverageMeter('ROC AUC', ':6.2f')
+        elif self.dataset_type == "hvac": # <-- 新增 HVAC
             return AverageMeter('ROC AUC', ':6.2f')
         else:
             return AverageMeter('Macro F1', ':6.2f')
@@ -258,5 +264,3 @@ class DACAD(Base_Algorithm):
             self.augmenter = Augmenter(cutout_length=cutout_len)
         else:
             print("The model only support multi channel time series data")
-
-

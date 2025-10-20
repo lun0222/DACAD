@@ -1,6 +1,7 @@
 import sys
-
-sys.path.append("..")
+# 使用絕對路徑強制 E:\DACAD 進入搜尋路徑
+# 確保 E:\\DACAD 是您專案的正確路徑
+sys.path.insert(0, 'E:\\DACAD')
 import os
 import numpy as np
 import pandas as pd
@@ -9,8 +10,7 @@ from utils.dataset import get_dataset
 from utils.augmentations import Augmenter
 
 from torch.utils.data import DataLoader
-from utils.util_progress_log import get_logger, \
-    get_dataset_type
+from utils.util_progress_log import get_logger,  get_dataset_type
 
 import json
 
@@ -46,6 +46,11 @@ def main(args):
             log("Best Prec score is : %.4f " % (metrics_pred["best_prec"]))
             log("Best Rec score is : %.4f " % (metrics_pred["best_rec"]))
         elif dataset_type == "boiler":
+            log("AUPRC score is : %.4f " % (metrics_pred["avg_prc"]))
+            log("Best F1 score is : %.4f " % (metrics_pred["best_f1"]))
+            log("Best Prec score is : %.4f " % (metrics_pred["best_prec"]))
+            log("Best Rec score is : %.4f " % (metrics_pred["best_rec"]))
+        elif dataset_type == "hvac": # <-- 新增 HVAC
             log("AUPRC score is : %.4f " % (metrics_pred["avg_prc"]))
             log("Best F1 score is : %.4f " % (metrics_pred["best_f1"]))
             log("Best Prec score is : %.4f " % (metrics_pred["best_prec"]))

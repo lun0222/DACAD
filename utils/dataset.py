@@ -1,3 +1,8 @@
+import sys
+# 使用絕對路徑強制 E:\DACAD 進入搜尋路徑
+# 確保 E:\\DACAD 是您專案的正確路徑
+sys.path.insert(0, 'E:\\DACAD')
+
 import ast
 import os
 
@@ -6,7 +11,8 @@ import pandas as pd
 import torch
 from torch.utils.data import Dataset
 
-from utils.augmentations import Injector
+from utils.augmentations import Injector # <-- 確保這一行在頂部
+# ... (檔案的其餘部分保持不變)
 
 
 def get_dataset(args, domain_type, split_type):
@@ -34,6 +40,12 @@ def get_dataset(args, domain_type, split_type):
             return BoilerDataset(args.path_src, subject_id=args.id_src, split_type=split_type, is_cuda=True)
         else:
             return BoilerDataset_trg(args.path_trg, subject_id=args.id_trg, split_type=split_type, is_cuda=True)
+            
+    elif "HVAC" in args.path_src: # <-- 新增 HVAC 區塊
+        if domain_type == "source":
+            return HVACDataset(args.path_src, subject_id=args.id_src, split_type=split_type, is_cuda=True)
+        else:
+            return HVACDataset_trg(args.path_trg, subject_id=args.id_trg, split_type=split_type, is_cuda=True)
 
 class MSLDataset(Dataset):
     def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False):
@@ -551,6 +563,181 @@ class BoilerDataset_trg(Dataset):
             wlabels.append(lbl)
         return np.stack(windows), np.stack(wlabels)
 
+# =============================================================================
+# START: 新增 HVAC 類別
+# =============================================================================
+class HVACDataset(Dataset):
+    def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False):
+        self.root_dir = root_dir
+        self.subject_id = subject_id
+        self.split_type = split_type
+        self.is_cuda = is_cuda
+        self.verbose = verbose
+
+        self.load_sequence()
+
+    def __len__(self):
+        return len(self.sequence)
+
+    def __getitem__(self, id_):
+        sequence = self.sequence[id_]
+        pid_ = np.random.randint(0, len(self.positive))
+        positive = self.positive[pid_]
+        random_choice = np.random.randint(0, 10)
+        if random_choice == 0:
+            nid_ = np.random.randint(0, len(self.negative))
+            negative = self.negative[nid_]
+        else:
+            negative = get_injector(sequence, self.mean, self.std)
+
+        sequence_mask = np.ones(sequence.shape)
+        label = self.label[id_]
+
+        if self.is_cuda:
+            sequence = torch.Tensor(sequence).float().cuda()
+            sequence_mask = torch.Tensor(sequence_mask).long().cuda()
+            positive = torch.Tensor(positive).float().cuda()
+            negative = torch.Tensor(negative).float().cuda()
+            label = torch.Tensor([label]).long().cuda()
+        else:
+            sequence = torch.Tensor(sequence).float()
+            sequence_mask = torch.Tensor(sequence_mask).long()
+            positive = torch.Tensor(positive).float()
+            negative = torch.Tensor(negative).float()
+            label = torch.Tensor([label]).long()
+
+        sample = {"sequence": sequence, "sequence_mask": sequence_mask, "positive": positive, "negative": negative, "label": label}
+
+        return sample
+
+    def load_sequence(self):
+        # *** 重要：請根據您的數據格式修改此處 ***
+        path_sequence = os.path.join(self.root_dir, (self.subject_id) + ".csv")
+        self.sequence = pd.read_csv(path_sequence).values
+        # 假設最後一欄是標籤
+        self.label = self.sequence[:, -1]
+        # 假設我們使用第2欄到倒數第2欄作為特徵
+        self.sequence = self.sequence[:, 2:-1].astype(float) 
+        # *****************************************
+
+        # Z-score 標準化
+        self.mean = np.mean(self.sequence, axis=0)
+        self.std = np.std(self.sequence, axis=0)
+        self.std[self.std==0.0] = 1.0
+        self.sequence = (self.sequence - self.mean) / self.std
+
+        # 轉換為滑動窗口
+        wsz, stride = 100, 1 # 您可以調整窗口大小 (wsz)
+        self.sequence , self.label = self.convert_to_windows(wsz, stride)
+        self.positive = self.sequence[self.label == 0]
+        self.negative = self.sequence[self.label == 1]
+
+    def get_statistic(self):
+        self.mean = np.mean(self.sequence, axis=0)
+        self.std = np.std(self.sequence, axis=0)
+        self.std[self.std==0.0] = 1.0
+        return self.mean, self.std
+
+    def convert_to_windows(self, w_size, stride):
+        windows = []
+        wlabels = []
+        sz = int((self.sequence.shape[0]-w_size)/stride)
+        for i in range(0, sz):
+            st = i * stride
+            w = self.sequence[st:st+w_size]
+            if self.label[st:st+w_size].any() > 0:
+                lbl = 1
+            else: lbl=0
+            windows.append(w)
+            wlabels.append(lbl)
+        return np.stack(windows), np.stack(wlabels)
+
+class HVACDataset_trg(Dataset):
+    def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False):
+        self.root_dir = root_dir
+        self.subject_id = subject_id
+        self.split_type = split_type
+        self.is_cuda = is_cuda
+        self.verbose = verbose
+
+        self.load_sequence()
+
+    def __len__(self):
+        return len(self.sequence)
+
+    def __getitem__(self, id_):
+        sequence = self.sequence[id_]
+        pid_ = abs(id_ - np.random.randint(1, 11))
+        positive = self.sequence[pid_]
+        self.positive = positive
+        negative = get_injector(sequence, self.mean, self.std)
+        self.negative = negative
+
+        sequence_mask = np.ones(sequence.shape)
+        label = self.label[id_]
+
+        if self.is_cuda:
+            sequence = torch.Tensor(sequence).float().cuda()
+            sequence_mask = torch.Tensor(sequence_mask).long().cuda()
+            positive = torch.Tensor(positive).float().cuda()
+            negative = torch.Tensor(negative).float().cuda()
+            label = torch.Tensor([label]).long().cuda()
+        else:
+            sequence = torch.Tensor(sequence).float()
+            sequence_mask = torch.Tensor(sequence_mask).long()
+            positive = torch.Tensor(positive).float()
+            negative = torch.Tensor(negative).float()
+            label = torch.Tensor([label]).long()
+
+        sample = {"sequence": sequence, "sequence_mask": sequence_mask, "positive": positive, "negative": negative, "label": label}
+
+        return sample
+
+    def load_sequence(self):
+        # *** 重要：請根據您的數據格式修改此處 ***
+        path_sequence = os.path.join(self.root_dir, (self.subject_id) + ".csv")
+        self.sequence = pd.read_csv(path_sequence).values
+        # 假設最後一欄是標籤
+        self.label = self.sequence[:, -1]
+        # 假設我們使用第2欄到倒數第2欄作為特徵
+        self.sequence = self.sequence[:, 2:-1].astype(float)
+        # *****************************************
+
+        # Z-score 標準化
+        self.mean = np.mean(self.sequence, axis=0)
+        self.std = np.std(self.sequence, axis=0)
+        self.std[self.std==0.0] = 1.0
+        self.sequence = (self.sequence - self.mean) / self.std
+
+        # 轉換為滑動窗口
+        wsz, stride = 100, 1 # 您可以調整窗口大小 (wsz)
+        self.sequence , self.label = self.convert_to_windows(wsz, stride)
+        self.positive = self.sequence[self.label == 0]
+        self.negative = self.sequence[self.label == 1]
+
+    def get_statistic(self):
+        self.mean = np.mean(self.sequence, axis=0)
+        self.std = np.std(self.sequence, axis=0)
+        self.std[self.std==0.0] = 1.0
+        return self.mean, self.std
+
+    def convert_to_windows(self, w_size, stride):
+        windows = []
+        wlabels = []
+        sz = int((self.sequence.shape[0]-w_size)/stride)
+        for i in range(0, sz):
+            st = i * stride
+            w = self.sequence[st:st+w_size]
+            if self.label[st:st+w_size].any() > 0:
+                lbl = 1
+            else: lbl=0
+            windows.append(w)
+            wlabels.append(lbl)
+        return np.stack(windows), np.stack(wlabels)
+# =============================================================================
+# END: 新增 HVAC 類別
+# =============================================================================
+
 def get_injector(sample_batched, d_mean, d_std):
     sample_batched = (sample_batched * d_std) + d_mean
     injected_window = Injector(sample_batched)
@@ -568,6 +755,8 @@ def get_output_dim(args):
         output_dim = 1
     elif "Boiler" in args.path_src:
         output_dim = 1
+    elif "HVAC" in args.path_src: # <-- 新增 HVAC 
+        output_dim = 1
     else:
         output_dim = 6
 
@@ -583,6 +772,3 @@ def collate_test(batch):
         val = torch.cat(val, dim=0)
         out[key] = val
     return out
-
-
-
