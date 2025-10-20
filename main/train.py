@@ -3,6 +3,7 @@ import sys
 # 確保 E:\\DACAD 是您專案的正確路徑
 sys.path.insert(0, 'D:\\DACAD') 
 import os
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 import numpy as np
 import random
 import torch
