@@ -231,7 +231,7 @@ class DACAD(Base_Algorithm):
                                os.path.join(experiment_folder_path, "model_best.pth.tar"))
 
     def load_state(self,experiment_folder_path):
-        checkpoint = torch.load(experiment_folder_path+"/model_best.pth.tar")
+        checkpoint = torch.load(experiment_folder_path+"/model_best.pth.tar", weights_only=True)
         self.model.load_state_dict(checkpoint['state_dict'])
 
     #We need to overwrite below functions for DACAD
