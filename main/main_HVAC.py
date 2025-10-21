@@ -83,7 +83,7 @@ if __name__ == '__main__':
                 ]
                 
                 # 在預設目錄 (E:\DACAD) 中執行
-                subprocess.run(command_train)
+                subprocess.run(command_train, cwd=project_root)
 
                 # 6. 定義評估命令
                 # 注意：eval.py 可能也需要修改以接受 --features
@@ -98,6 +98,6 @@ if __name__ == '__main__':
                 ]
                 
                 # 在預設目錄 (E:\DACAD) 中執行
-                subprocess.run(command_eval)
+                subprocess.run(command_eval, cwd=project_root)
 
     print("======= 所有 HVAC 實驗已完成 =======")
