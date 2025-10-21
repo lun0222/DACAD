@@ -17,7 +17,7 @@ from algorithms import get_algorithm
 
 def main(args):
     # Torch RNG
-    # DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     torch.manual_seed(args.seed)
     torch.cuda.manual_seed(args.seed)
     torch.cuda.manual_seed_all(args.seed)
@@ -31,6 +31,7 @@ def main(args):
     log = get_logger(
         os.path.join(args.experiments_main_folder, args.experiment_folder, str(args.id_src) + "-" + str(args.id_trg),
                      args.log))
+    log(f"Using device: {DEVICE}") # <-- 建議新增，方便除錯
 
     # Some functions and variables for logging
     dataset_type = get_dataset_type(args)
@@ -81,7 +82,7 @@ def main(args):
     input_static_dim = dataset_src[0]['static'].shape[0] if 'static' in dataset_src[0] else 0
 
     # Get our algorithm
-    algorithm = get_algorithm(args, input_channels_dim=input_channels_dim, input_static_dim=input_static_dim)
+    algorithm = get_algorithm(args, input_channels_dim=input_channels_dim, input_static_dim=input_static_dim, device=DEVICE)
 
     experiment_folder_path = os.path.join(args.experiments_main_folder, args.experiment_folder,
                                           str(args.id_src) + "-" + str(args.id_trg))
@@ -100,7 +101,8 @@ def main(args):
         for i_batch, sample_batched_src in enumerate(dataloader_src):
                 sample_batched_src = sample_batched_src
                 for key, value in sample_batched_src.items():
-                    sample_batched_src[key] = sample_batched_src[key]#.to(device= 'cuda', non_blocking= True)
+                    # 將數據張量傳送到正確的設備
+                    sample_batched_src[key] = sample_batched_src[key].to(device=DEVICE, non_blocking=True)
                 # Current model does not support smaller batches than batch_size (due to queue ptr)
                 if len(sample_batched_src['sequence']) != batch_size:
                     continue
@@ -114,7 +116,8 @@ def main(args):
                     sample_batched_trg = next(dataloader_iterator)
 
                 for key, value in sample_batched_trg.items():
-                    sample_batched_trg[key] = sample_batched_trg[key]#.to(device= 'cuda', non_blocking= True)
+                    # 將數據張量傳送到正確的設備
+                    sample_batched_trg[key] = sample_batched_trg[key].to(device=DEVICE, non_blocking=True)
 
                 # Current model does not support smaller batches than batch_size (due to queue ptr)
                 if len(sample_batched_trg['sequence']) != batch_size:
