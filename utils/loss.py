@@ -43,9 +43,6 @@ class PredictionLoss(object):
         normal_loss = torch.sqrt(torch.max(torch.zeros_like(squared_radius), dist_to_center - squared_radius)) #torch.sqrt(dist_to_center) * mask #
         anomal_loss = torch.sqrt(torch.max(torch.zeros_like(squared_radius), 1 + squared_radius - dist_to_center))
         labels_src = labels.squeeze()
-        labels_src = labels_src.cuda()
-        normal_loss = normal_loss.cuda()
-        anomal_loss = anomal_loss.cuda()
 
         dist_to_radius = torch.where(labels_src == 0, normal_loss , anomal_loss)
 

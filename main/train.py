@@ -85,7 +85,7 @@ def main(args):
     algorithm = get_algorithm(args, input_channels_dim=input_channels_dim, input_static_dim=input_static_dim, device=DEVICE)
 
     experiment_folder_path = os.path.join(args.experiments_main_folder, args.experiment_folder,
-                                          str(args.id_src) + "-" + str(args.id_trg))
+                                        str(args.id_src) + "-" + str(args.id_trg))
 
     # Initialize progress metrics before training
     count_step = 0
@@ -97,6 +97,17 @@ def main(args):
         dataloader_trg = DataLoader(dataset_trg, batch_size=batch_size,
                                     shuffle=True, num_workers=0, drop_last=True)
         dataloader_iterator = iter(dataloader_trg)
+
+        # <-- 新增開始 -->
+        # 在 epoch 開始時初始化 ProgressMeter
+        progress = ProgressMeter(
+            len(dataloader_src),
+            algorithm.return_metrics(),
+            prefix="Epoch: [{}]".format(i))
+        
+        # 設定進度顯示的頻率 (例如每 50 個 batch 顯示一次)
+        progress_freq = 1 
+        # <-- 新增結束 -->
 
         for i_batch, sample_batched_src in enumerate(dataloader_src):
                 sample_batched_src = sample_batched_src
@@ -127,13 +138,16 @@ def main(args):
                 algorithm.step(sample_batched_src, sample_batched_trg, count_step=count_step, epoch=i,
                                src_mean=src_mean, src_std=src_std, trg_mean=trg_mean, trg_std=trg_std)
 
+                # <-- 新增開始 -->
+                # 定期顯示進度
+                if (i_batch + 1) % progress_freq == 0:
+                    log(progress.display(i_batch + 1, is_logged=True))
+                # <-- 新增結束 -->
+
                 count_step += 1
                 if count_step % len(dataloader_src) == 0:
-                    progress = ProgressMeter(
-                        len(dataloader_src),
-                        algorithm.return_metrics(),
-                        prefix="Epoch: [{}]".format(i))
-
+                    
+                    # <-- 修改：只記錄最終進度，不安裝 ProgressMeter -->
                     log(progress.display(i_batch + 1, is_logged=True))
 
                     # Refresh the saved metrics for algorithm
