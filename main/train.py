@@ -274,6 +274,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--seed', type=int, default=1234)
 
+    parser.add_argument('--features', type=str, nargs='+', default=None, help='List of feature column names to use.')
     args = parser.parse_args()
 
     if not os.path.exists(args.experiments_main_folder):

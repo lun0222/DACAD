@@ -1,3 +1,5 @@
+# 檔案: main/main_HVAC.py
+
 import os
 import subprocess
 import sys
@@ -30,7 +32,18 @@ if __name__ == '__main__':
     
     # 獲取當前正在使用的 Python 解譯器路徑
     python_executable = sys.executable
-    
+
+    # =============================================================================
+    # START: 新增您要選取的特徵欄位名稱
+    # =============================================================================
+    # *** 請將 'Your_Feature_Name_1', 'Your_Feature_Name_2' 替換為您 CSV 中的實際欄位名稱 ***
+    target_features = [
+        'hp_comp_1','lp_comp_1','comp_current_1','cond_current_1','return_air_temp','superheat_1','lp_plate_temp_1'
+    ]
+    # =============================================================================
+    # END: 新增特徵欄位
+    # =============================================================================
+
     # 4. 循環遍歷所有 來源(src) -> 目標(trg) 組合
     for src in files:
         for trg in files:
@@ -46,7 +59,7 @@ if __name__ == '__main__':
                     '--path_trg', dataset_path,
                     '--id_src', src,
                     '--id_trg', trg,
-                    '--num_epochs', '20',
+                    '--num_epochs', '5',
                     '--batch_size', '128',
                     '--eval_batch_size', '256',
                     '--learning_rate', '1e-4',
@@ -57,13 +70,25 @@ if __name__ == '__main__':
                     '--kernel_size_TCN', '7',
                     '--hidden_dim_MLP', '1024',
                     '--queue_size', '98304',
-                    '--momentum', '0.99'
+                    '--momentum', '0.99',
+                    
+                    # ===================================================================
+                    # START: 將特徵列表作為參數傳遞
+                    # 我們使用 '--features' 作為參數名稱，後面跟著列表中的所有名稱
+                    # ===================================================================
+                    '--features', *target_features 
+                    # ===================================================================
+                    # END: 傳遞參數
+                    # ===================================================================
                 ]
                 
                 # 在預設目錄 (E:\DACAD) 中執行
                 subprocess.run(command_train)
 
                 # 6. 定義評估命令
+                # 注意：eval.py 可能也需要修改以接受 --features
+                # 但根據您目前的 eval.py 命令，它似乎是從 results 資料夾讀取設定
+                # 如果 eval.py 也需要讀取數據集，您可能需要用同樣的方式傳遞 --features
                 command_eval = [
                     python_executable, eval_script,
                     '--experiments_main_folder', 'results',

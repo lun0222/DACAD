@@ -41,11 +41,25 @@ def get_dataset(args, domain_type, split_type):
         else:
             return BoilerDataset_trg(args.path_trg, subject_id=args.id_trg, split_type=split_type, is_cuda=True)
             
-    elif "HVAC" in args.path_src: # <-- 新增 HVAC 區塊
+    elif "HVAC" in args.path_src: # <-- HVAC 區塊
+        # ===================================================================
+        # START: 修改
+        # ===================================================================
+        # 從 args 物件中獲取特徵列表 (如果 train.py 沒有定義 'features'，則為 None)
+        # eval.py 會從 commandline_args.txt 讀取 saved_args，所以也能取到 'features'
+        feature_columns = getattr(args, 'features', None) 
+        
         if domain_type == "source":
-            return HVACDataset(args.path_src, subject_id=args.id_src, split_type=split_type, is_cuda=True)
+            # 將 feature_columns 傳遞給 Dataset
+            return HVACDataset(args.path_src, subject_id=args.id_src, split_type=split_type, is_cuda=True,
+                               feature_columns=feature_columns)
         else:
-            return HVACDataset_trg(args.path_trg, subject_id=args.id_trg, split_type=split_type, is_cuda=True)
+            # 將 feature_columns 傳遞給 Dataset
+            return HVACDataset_trg(args.path_trg, subject_id=args.id_trg, split_type=split_type, is_cuda=True,
+                                   feature_columns=feature_columns)
+        # ===================================================================
+        # END: 修改
+        # ===================================================================
 
 class MSLDataset(Dataset):
     def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False):
@@ -564,16 +578,18 @@ class BoilerDataset_trg(Dataset):
         return np.stack(windows), np.stack(wlabels)
 
 # =============================================================================
-# START: 新增 HVAC 類別
+# START: 修改 HVAC 類別
 # =============================================================================
 class HVACDataset(Dataset):
-    def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False):
+    # 1. 修改 __init__ 以接收 feature_columns
+    def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False, 
+                 feature_columns=None): # <-- 新增參數
         self.root_dir = root_dir
         self.subject_id = subject_id
         self.split_type = split_type
-        # 只有在 is_cuda 為 True *且* CUDA 實際可用時，才設為 True
-        self.is_cuda = is_cuda and torch.cuda.is_available() # <-- 修改後
+        self.is_cuda = is_cuda and torch.cuda.is_available()
         self.verbose = verbose
+        self.feature_columns = feature_columns # <-- 保存參數
 
         self.load_sequence()
 
@@ -611,24 +627,49 @@ class HVACDataset(Dataset):
 
         return sample
 
+    # 2. 修改 load_sequence 以使用 feature_columns
     def load_sequence(self):
         # *** 重要：請根據您的數據格式修改此處 ***
         path_sequence = os.path.join(self.root_dir, (self.subject_id) + ".csv")
-        self.sequence = pd.read_csv(path_sequence).values
-        # 假設最後一欄是標籤
-        self.label = self.sequence[:, -1]
-        # 假設我們使用第2欄到倒數第2欄作為特徵
-        self.sequence = self.sequence[:, 2:-1].astype(float) 
+        
+        # ===================================================================
+        # START: 修改 - 按名稱選取特徵
+        # ===================================================================
+        # 1. 讀取 CSV 為 pandas DataFrame
+        df = pd.read_csv(path_sequence)
+
+        # 2. 假設最後一欄是標籤 (保持不變)
+        self.label = df.iloc[:, -1].values
+
+        # 3. 根據 self.feature_columns 選擇特徵
+        if self.feature_columns:
+            # 如果有提供特徵名稱，則使用它們
+            if self.verbose:
+                print(f"[HVACDataset] Using specified features: {self.feature_columns}")
+            # 檢查所有請求的特徵是否存在
+            missing_cols = [col for col in self.feature_columns if col not in df.columns]
+            if missing_cols:
+                raise ValueError(f"以下特徵在 CSV 檔案中找不到: {missing_cols}")
+            self.sequence = df[self.feature_columns].astype(float).values
+        else:
+            # 如果未提供，則使用原本的預設值 (第2欄到倒數第2欄)
+            if self.verbose:
+                print("[HVACDataset] No features specified, using default (cols 2 to -1)")
+            self.sequence = df.iloc[:, 2:-1].astype(float).values
+        # ===================================================================
+        # END: 修改
+        # ===================================================================
+        
         # *****************************************
 
-        # Z-score 標準化
+        # Z-score 標準化 (保持不變)
         self.mean = np.mean(self.sequence, axis=0)
         self.std = np.std(self.sequence, axis=0)
         self.std[self.std==0.0] = 1.0
         self.sequence = (self.sequence - self.mean) / self.std
 
-        # 轉換為滑動窗口
-        wsz, stride = 100, 1 # 您可以調整窗口大小 (wsz)
+        # 轉換為滑動窗口 (保持不變)
+        wsz, stride = 100, 1 
         self.sequence , self.label = self.convert_to_windows(wsz, stride)
         self.positive = self.sequence[self.label == 1]
         self.negative = self.sequence[self.label == 0]
@@ -654,12 +695,15 @@ class HVACDataset(Dataset):
         return np.stack(windows), np.stack(wlabels)
 
 class HVACDataset_trg(Dataset):
-    def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False):
+    # 1. 修改 __init__ 以接收 feature_columns
+    def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False,
+                 feature_columns=None): # <-- 新增參數
         self.root_dir = root_dir
         self.subject_id = subject_id
         self.split_type = split_type
         self.is_cuda = is_cuda and torch.cuda.is_available()
         self.verbose = verbose
+        self.feature_columns = feature_columns # <-- 保存參數
 
         self.load_sequence()
 
@@ -694,24 +738,49 @@ class HVACDataset_trg(Dataset):
 
         return sample
 
+    # 2. 修改 load_sequence 以使用 feature_columns
     def load_sequence(self):
         # *** 重要：請根據您的數據格式修改此處 ***
         path_sequence = os.path.join(self.root_dir, (self.subject_id) + ".csv")
-        self.sequence = pd.read_csv(path_sequence).values
-        # 假設最後一欄是標籤
-        self.label = self.sequence[:, -1]
-        # 假設我們使用第2欄到倒數第2欄作為特徵
-        self.sequence = self.sequence[:, 2:-1].astype(float)
+        
+        # ===================================================================
+        # START: 修改 - 按名稱選取特徵
+        # ===================================================================
+        # 1. 讀取 CSV 為 pandas DataFrame
+        df = pd.read_csv(path_sequence)
+        
+        # 2. 假設最後一欄是標籤 (保持不變)
+        self.label = df.iloc[:, -1].values
+
+        # 3. 根據 self.feature_columns 選擇特徵
+        if self.feature_columns:
+            # 如果有提供特徵名稱，則使用它們
+            if self.verbose:
+                print(f"[HVACDataset_trg] Using specified features: {self.feature_columns}")
+            # 檢查所有請求的特徵是否存在
+            missing_cols = [col for col in self.feature_columns if col not in df.columns]
+            if missing_cols:
+                raise ValueError(f"以下特徵在 CSV 檔案中找不到: {missing_cols}")
+            self.sequence = df[self.feature_columns].astype(float).values
+        else:
+            # 如果未提供，則使用原本的預設值 (第2欄到倒數第2欄)
+            if self.verbose:
+                print("[HVACDataset_trg] No features specified, using default (cols 2 to -1)")
+            self.sequence = df.iloc[:, 2:-1].astype(float).values
+        # ===================================================================
+        # END: 修改
+        # ===================================================================
+        
         # *****************************************
 
-        # Z-score 標準化
+        # Z-score 標準化 (保持不變)
         self.mean = np.mean(self.sequence, axis=0)
         self.std = np.std(self.sequence, axis=0)
         self.std[self.std==0.0] = 1.0
         self.sequence = (self.sequence - self.mean) / self.std
 
-        # 轉換為滑動窗口
-        wsz, stride = 100, 1 # 您可以調整窗口大小 (wsz)
+        # 轉換為滑動窗口 (保持不變)
+        wsz, stride = 100, 1 
         self.sequence , self.label = self.convert_to_windows(wsz, stride)
         self.positive = self.sequence[self.label == 1]
         self.negative = self.sequence[self.label == 0]
@@ -736,7 +805,7 @@ class HVACDataset_trg(Dataset):
             wlabels.append(lbl)
         return np.stack(windows), np.stack(wlabels)
 # =============================================================================
-# END: 新增 HVAC 類別
+# END: 修改 HVAC 類別
 # =============================================================================
 
 def get_injector(sample_batched, d_mean, d_std):
