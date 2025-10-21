@@ -52,7 +52,7 @@ class MSLDataset(Dataset):
         self.root_dir = root_dir
         self.subject_id = subject_id
         self.split_type = split_type
-        self.is_cuda = is_cuda
+        self.is_cuda = is_cuda and torch.cuda.is_available()
         self.verbose = verbose
 
         self.load_sequence()
@@ -123,8 +123,8 @@ class MSLDataset(Dataset):
 
         wsz, stride = 100, 1
         self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 0]
-        self.negative = self.sequence[self.label == 1]
+        self.positive = self.sequence[self.label == 1]
+        self.negative = self.sequence[self.label == 0]
 
     def get_statistic(self):
         self.mean = np.mean(self.sequence, axis=0)
@@ -151,7 +151,7 @@ class MSLDataset_trg(Dataset):
         self.root_dir = root_dir
         self.subject_id = subject_id
         self.split_type = split_type
-        self.is_cuda = is_cuda
+        self.is_cuda = is_cuda and torch.cuda.is_available()
         self.verbose = verbose
 
         self.load_sequence()
@@ -218,8 +218,8 @@ class MSLDataset_trg(Dataset):
 
         wsz, stride = 100, 1
         self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 0]
-        self.negative = self.sequence[self.label == 1]
+        self.positive = self.sequence[self.label == 1]
+        self.negative = self.sequence[self.label == 0]
 
     def get_statistic(self):
         self.mean = np.mean(self.sequence, axis=0)
@@ -247,7 +247,7 @@ class SMDDataset(Dataset):
         self.root_dir = root_dir
         self.subject_id = subject_id
         self.split_type = split_type
-        self.is_cuda = is_cuda
+        self.is_cuda = is_cuda and torch.cuda.is_available()
         self.verbose = verbose
 
         self.load_sequence()
@@ -301,8 +301,8 @@ class SMDDataset(Dataset):
 
         wsz, stride = 100, 1
         self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 0]
-        self.negative = self.sequence[self.label == 1]
+        self.positive = self.sequence[self.label == 1]
+        self.negative = self.sequence[self.label == 0]
 
     def get_statistic(self):
         self.mean = np.mean(self.sequence, axis=0)
@@ -329,7 +329,7 @@ class SMDDataset_trg(Dataset):
         self.root_dir = root_dir
         self.subject_id = subject_id
         self.split_type = split_type
-        self.is_cuda = is_cuda
+        self.is_cuda = is_cuda and torch.cuda.is_available()
         self.verbose = verbose
 
         self.load_sequence()
@@ -380,8 +380,8 @@ class SMDDataset_trg(Dataset):
 
         wsz, stride = 100, 1
         self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 0]
-        self.negative = self.sequence[self.label == 1]
+        self.positive = self.sequence[self.label == 1]
+        self.negative = self.sequence[self.label == 0]
 
     def get_statistic(self):
         self.mean = np.mean(self.sequence, axis=0)
@@ -409,7 +409,7 @@ class BoilerDataset(Dataset):
         self.root_dir = root_dir
         self.subject_id = subject_id
         self.split_type = split_type
-        self.is_cuda = is_cuda
+        self.is_cuda = is_cuda and torch.cuda.is_available()
         self.verbose = verbose
 
         self.load_sequence()
@@ -462,8 +462,8 @@ class BoilerDataset(Dataset):
 
         wsz, stride = 100, 1
         self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 0]
-        self.negative = self.sequence[self.label == 1]
+        self.positive = self.sequence[self.label == 1]
+        self.negative = self.sequence[self.label == 0]
 
     def get_statistic(self):
         self.mean = np.mean(self.sequence, axis=0)
@@ -490,7 +490,7 @@ class BoilerDataset_trg(Dataset):
         self.root_dir = root_dir
         self.subject_id = subject_id
         self.split_type = split_type
-        self.is_cuda = is_cuda
+        self.is_cuda = is_cuda and torch.cuda.is_available()
         self.verbose = verbose
 
         self.load_sequence()
@@ -540,8 +540,8 @@ class BoilerDataset_trg(Dataset):
 
         wsz, stride = 100, 1
         self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 0]
-        self.negative = self.sequence[self.label == 1]
+        self.positive = self.sequence[self.label == 1]
+        self.negative = self.sequence[self.label == 0]
 
     def get_statistic(self):
         self.mean = np.mean(self.sequence, axis=0)
@@ -571,7 +571,8 @@ class HVACDataset(Dataset):
         self.root_dir = root_dir
         self.subject_id = subject_id
         self.split_type = split_type
-        self.is_cuda = is_cuda
+        # 只有在 is_cuda 為 True *且* CUDA 實際可用時，才設為 True
+        self.is_cuda = is_cuda and torch.cuda.is_available() # <-- 修改後
         self.verbose = verbose
 
         self.load_sequence()
@@ -629,8 +630,8 @@ class HVACDataset(Dataset):
         # 轉換為滑動窗口
         wsz, stride = 100, 1 # 您可以調整窗口大小 (wsz)
         self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 0]
-        self.negative = self.sequence[self.label == 1]
+        self.positive = self.sequence[self.label == 1]
+        self.negative = self.sequence[self.label == 0]
 
     def get_statistic(self):
         self.mean = np.mean(self.sequence, axis=0)
@@ -657,7 +658,7 @@ class HVACDataset_trg(Dataset):
         self.root_dir = root_dir
         self.subject_id = subject_id
         self.split_type = split_type
-        self.is_cuda = is_cuda
+        self.is_cuda = is_cuda and torch.cuda.is_available()
         self.verbose = verbose
 
         self.load_sequence()
@@ -712,8 +713,8 @@ class HVACDataset_trg(Dataset):
         # 轉換為滑動窗口
         wsz, stride = 100, 1 # 您可以調整窗口大小 (wsz)
         self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 0]
-        self.negative = self.sequence[self.label == 1]
+        self.positive = self.sequence[self.label == 1]
+        self.negative = self.sequence[self.label == 0]
 
     def get_statistic(self):
         self.mean = np.mean(self.sequence, axis=0)
