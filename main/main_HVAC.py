@@ -77,12 +77,15 @@ def plot_anomaly_timeline(experiment_dir_path, result_file_name):
         print(f"  [繪圖錯誤]：預測檔案 {pred_csv_path} 為空。跳過此圖表。")
         return
     
-    if 'prediction' not in pred_df.columns or 'label' not in pred_df.columns:
-        print(f"  [繪圖錯誤]：預測 CSV 必須包含 'prediction' 和 'label' 欄位。跳過此圖表。")
+    # 檢查 'y_pred' (預測分數) 和 'y' (真實標籤) 欄位是否存在
+    if 'y_pred' not in pred_df.columns or 'y' not in pred_df.columns:
+        print(f"  [繪圖錯誤]：預測 CSV 必須包含 'y_pred' 和 'y' 欄位。跳過此圖表。")
         return
 
-    scores = pred_df['prediction'].values
-    true_labels = pred_df['label'].values
+    # 從 'y_pred' 欄位讀取分數
+    scores = pred_df['y_pred'].values
+    # 從 'y' 欄位讀取真實標籤
+    true_labels = pred_df['y'].values
 
     # --- 3. 找到最佳門檻值並產生 0/1 預測 ---
     best_threshold = find_best_f1_threshold(scores, true_labels)
