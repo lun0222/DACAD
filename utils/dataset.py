@@ -574,7 +574,6 @@ class HVACDataset(Dataset):
         # 只有在 is_cuda 為 True *且* CUDA 實際可用時，才設為 True
         self.is_cuda = is_cuda and torch.cuda.is_available() # <-- 修改後
         self.verbose = verbose
-        self.feature_list = feature_list
 
         self.load_sequence()
 
