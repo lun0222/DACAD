@@ -106,7 +106,7 @@ def main(args):
             prefix="Epoch: [{}]".format(i))
         
         # 設定進度顯示的頻率 (例如每 50 個 batch 顯示一次)
-        progress_freq = 1 
+        progress_freq = 10 
         # <-- 新增結束 -->
 
         for i_batch, sample_batched_src in enumerate(dataloader_src):
