@@ -10,6 +10,7 @@ from sklearn.metrics import f1_score
 from matplotlib.patches import Patch
 import time # 用於處理檔案延遲
 from datetime import datetime, timedelta
+import matplotlib.dates as mdates
 
 # =============================================================================
 # START: 新增的輔助函式 (來自 plot_timeline.py)
@@ -128,6 +129,15 @@ def plot_anomaly_timeline(prediction_csv_path, output_dir, dataset_name):
     plt.xlabel('Time', fontsize=12)
     plt.ylabel('Score', fontsize=12)
     plt.grid(True)
+    ax = plt.gca() # 取得目前的座標軸
+
+    # --- 關鍵修改處：選擇您想要的顆粒度 ---
+
+    # 範例 1：設定每 6 小時顯示一個「主刻度」
+    ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=10))
+
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+
     plt.legend(loc='upper right') # 將圖例放在右上角
     plt.xticks(rotation=30, ha='right') # 旋轉 x 軸標籤，使其不重疊
     plt.tight_layout() # 自動調整佈局，防止標籤重疊

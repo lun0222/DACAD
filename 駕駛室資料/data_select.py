@@ -2,7 +2,7 @@ import pandas as pd
 import os # 匯入 os 模組來處理檔案路徑
 
 # --- 1. CSV 檔案名稱 ---
-csv_file_name = 'data_org.csv'
+csv_file_name = '駕駛室資料\data_org.csv'
 
 # --- 2. 時間欄位名稱 ---
 time_column_name = 'DateTime'
