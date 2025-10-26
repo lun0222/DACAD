@@ -38,5 +38,14 @@
   "id_trg": "source_data",
   "task": "decompensation",
   "log": "train.log",
-  "seed": 1234
+  "seed": 1234,
+  "features": [
+    "hp_comp_1",
+    "lp_comp_1",
+    "comp_current_1",
+    "cond_current_1",
+    "return_air_temp",
+    "superheat_1",
+    "lp_plate_temp_1"
+  ]
 }
