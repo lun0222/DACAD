@@ -2,15 +2,15 @@ Target results saved to results\HVAC\source_data-target_data\predictions_test_ta
 TARGET RESULTS
 loaded from d:\DACAD\datasets\HVAC
 
-AUPRC score is : 0.9960 
-Best F1 score is : 0.9620 
-Best Prec score is : 0.9529 
-Best Rec score is : 0.9712 
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9997 
+Best Prec score is : 1.0000 
+Best Rec score is : 0.9994 
 Source results saved to results\HVAC\source_data-target_data\predictions_test_source.csv
 SOURCE RESULTS
 loaded from d:\DACAD\datasets\HVAC
 
 AUPRC score is : 1.0000 
-Best F1 score is : 0.9999 
+Best F1 score is : 0.9998 
 Best Prec score is : 1.0000 
-Best Rec score is : 0.9998 
+Best Rec score is : 0.9997 
