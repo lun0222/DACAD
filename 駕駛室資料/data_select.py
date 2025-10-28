@@ -1,6 +1,8 @@
 import pandas as pd
 import os # 匯入 os 模組來處理檔案路徑
 
+# (不再需要 scikit-learn，因為我們是按順序切割)
+
 # --- 1. CSV 檔案名稱 ---
 # (已更新為您提供的路徑)
 csv_file_name = 'D:/DACAD/駕駛室資料/data_org.csv'
@@ -10,7 +12,6 @@ time_column_name = 'DateTime'
 
 # --- 3. 主要的時間段與標籤列表 ---
 # 這裡包含您所有的時間定義
-# 程式會將這裡的每一個時間段都切成 前40%, 中間20%, 後40%
 time_periods_with_labels = [
     ('2025-04-11 09:14:00', '2025-04-11 09:44:00', 0),#冷凝盤管阻塞20%
     ('2025-04-11 09:46:00', '2025-04-11 10:16:00', 0),#冷凝盤管阻塞30%
@@ -27,25 +28,16 @@ time_periods_with_labels = [
     ('2025-04-14 13:25:00', '2025-04-14 14:25:00', 1),#冷媒洩漏10%
     ('2025-04-14 14:50:00', '2025-04-14 15:50:00', 1),#冷媒洩漏20%
     # ('2026-01-01 00:00:00', '2026-01-01 00:30:00', 0),#壓縮機故障10%
-    # ('2026-01-01 00:30:00', '2026-01-01 01:00:00', 0),#壓縮機故障20%
-    # ('2026-01-01 01:00:00', '2026-01-01 01:30:00', 0),#壓縮機故障30%
-    # ('2026-01-01 02:00:00', '2026-01-01 02:30:00', 0),#冷凝風扇電流上升10%
-    # ('2026-01-01 02:30:00', '2026-01-01 03:00:00', 0),#冷凝風扇電流上升20%
-    # ('2026-01-01 03:00:00', '2026-01-01 03:30:00', 0),#冷凝風扇電流上升30%
-    # ('2026-01-01 04:00:00', '2026-01-01 04:30:00', 0),#冷凝風扇電流上升10%
-    # ('2026-01-01 04:30:00', '2026-01-01 05:00:00', 0),#冷凝風扇電流下降20%
-    # ('2026-01-01 05:00:00', '2026-01-01 05:30:00', 0),#冷凝風扇電流下降30%
-    # ('2026-01-01 06:00:00', '2026-01-01 06:30:00', 0),#蒸發風扇電流上升10%
-    # ('2026-01-01 06:30:00', '2026-01-01 07:00:00', 0),#蒸發風扇電流上升20%
-    # ('2026-01-01 07:00:00', '2026-01-01 07:30:00', 0),#蒸發風扇電流上升30%
-    # ('2026-01-01 08:00:00', '2026-01-01 08:30:00', 0),#蒸發風扇電流下降10%
-    # ('2026-01-01 08:30:00', '2026-01-01 09:00:00', 0),#蒸發風扇電流下降20%
-    # ('2026-01-01 09:00:00', '2026-01-01 09:30:00', 0),#蒸發風扇電流下降30%
-    # ('2026-01-01 10:00:00', '2026-01-01 10:30:00', 0),#加熱器效率不良10%
-    # ('2026-01-01 10:30:00', '2026-01-01 11:00:00', 0),#加熱器效率不良20%
-    # ('2026-01-01 11:00:00', '2026-01-01 11:30:00', 0),#加熱器效率不良30%
+    # ... (其他被註解的時段)
 ]
+
+# --- 4. (舊的 'special_periods_to_extract' 已移除) ---
+
+# --- 5. 請修改這裡：設定輸出的資料夾路徑 ---
+# (已更新為您提供的路徑)
 output_directory = 'D:/DACAD/datasets/HVAC/' # <-- 請在這裡填寫您想儲存的完整路徑
+
+# --- 6. (RANDOM_SEED 已移除，因為我們現在按順序分割) ---
 
 
 # --- 主程式開始 (以下部分通常不需要修改) ---
@@ -70,6 +62,8 @@ if time_column_name not in df.columns:
 # 將時間欄位轉換為 pandas 的 datetime 格式
 df[time_column_name] = pd.to_datetime(df[time_column_name], errors='coerce')
 df.dropna(subset=[time_column_name], inplace=True)
+# 確保原始資料是按時間排序的
+df.sort_values(by=time_column_name, inplace=True)
 
 
 # --- 執行分割與處理 ---
@@ -79,87 +73,95 @@ if output_directory and not os.path.exists(output_directory):
     os.makedirs(output_directory)
     print(f"\n已建立新資料夾：{output_directory}")
 
-# 建立三個空列表，分別存放前40%、中間20%、後40%的資料
-front_40_dfs = []
-middle_20_dfs = []
-back_40_dfs = []
+# 建立 5 個空列表，分別存放 5 個最終檔案的資料片段
+source_train_dfs = []
+source_val_dfs = []
+target_train_dfs = []
+target_val_dfs = []
+test_dfs = [] # 統一的測試集
 
-# 1. 迭代所有時間段，將它們切成三份
-print("\n正在處理時間段並分割資料 (40% - 20% - 40%)...")
+# --- 建立一個輔助函式，用於按順序切割 30/10/30/10/20 ---
+def split_period_into_five(period_df, label):
+    """將單一時段的 DataFrame 按順序切成 30/10/30/10/20 五份"""
+    if period_df.empty:
+        return None, None, None, None, None
+        
+    # 標記標籤
+    period_df = period_df.copy()
+    period_df['label'] = label
+    
+    total_rows = len(period_df)
+    
+    # 計算分割點
+    s1 = int(total_rows * 0.3)  # 30%
+    s2 = int(total_rows * 0.4)  # 30% + 10% = 40%
+    s3 = int(total_rows * 0.7)  # 40% + 30% = 70%
+    s4 = int(total_rows * 0.8)  # 70% + 10% = 80%
+    # 剩下的 20% (80% -> 100%) 為 s4 之後
+
+    # 按順序切割
+    source_train_part = period_df.iloc[:s1]    # 前 30%
+    source_val_part = period_df.iloc[s1:s2]    # 中 10% (30% -> 40%)
+    target_train_part = period_df.iloc[s2:s3]    # 中 30% (40% -> 70%)
+    target_val_part = period_df.iloc[s3:s4]    # 中 10% (70% -> 80%)
+    test_part = period_df.iloc[s4:]            # 後 20% (80% -> 100%)
+    
+    return source_train_part, source_val_part, target_train_part, target_val_part, test_part
+
+# --- 1. 迭代所有時間段，進行 30/10/30/10/20 分割 ---
+print("\n步驟 1: 正在處理每個時間段...")
 for start_str, end_str, label in time_periods_with_labels:
     start_time = pd.to_datetime(start_str)
     end_time = pd.to_datetime(end_str)
     
-    # 計算總時長
-    duration = end_time - start_time
+    # (50/50 分割邏輯已移除)
     
-    # 計算兩個分割點
-    # 分割點1: 前 40% 結束
-    split_point_1 = start_time + (duration * 0.4)
-    # 分割點2: 中間 20% 結束 (即總時長的 60%)
-    split_point_2 = start_time + (duration * 0.6)
+    # 篩選「整個」時間段的資料
+    mask_full_period = (df[time_column_name] >= start_time) & (df[time_column_name] <= end_time)
+    full_period_df = df[mask_full_period]
+
+    # --- 處理 Source Data ---
+    s_train, s_val, t_train, t_val, test = split_period_into_five(full_period_df, label)
     
-    # 篩選前 40% (>= start, < split_point_1)
-    mask_front = (df[time_column_name] >= start_time) & (df[time_column_name] < split_point_1)
-    front_df = df[mask_front].copy()
+    if s_train is not None and not s_train.empty: source_train_dfs.append(s_train)
+    if s_val is not None and not s_val.empty:   source_val_dfs.append(s_val)
+    if t_train is not None and not t_train.empty: target_train_dfs.append(t_train)
+    if t_val is not None and not t_val.empty:   target_val_dfs.append(t_val)
+    if test is not None and not test.empty:    test_dfs.append(test)
+
+print("所有時間段都已按 30/10/30/10/20 的順序分割完成。")
+
+# --- 建立一個輔助函式來合併與儲存 ---
+def concat_and_save(dfs_list, filename, output_dir):
+    """將資料片段列表合併、排序並儲存"""
+    if not dfs_list:
+        print(f"\n沒有找到資料可儲存為 {filename}。")
+        return
+
+    # 合併來自所有時段的片段
+    final_df = pd.concat(dfs_list)
     
-    # 篩選中間 20% (>= split_point_1, < split_point_2)
-    # 注意：您的原始資料 '2026-01-01 04:00:00' 到 '04:30:00' 這種30分鐘的區間，
-    # 中間20% (6分鐘) 可能沒有資料點，這是正常的。
-    mask_middle = (df[time_column_name] >= split_point_1) & (df[time_column_name] < split_point_2)
-    middle_df = df[mask_middle].copy()
-
-    # 篩選後 40% (>= split_point_2, <= end)
-    mask_back = (df[time_column_name] >= split_point_2) & (df[time_column_name] <= end_time)
-    back_df = df[mask_back].copy()
+    # 確保最終檔案是按時間排序的
+    final_df.sort_values(by=time_column_name, inplace=True)
     
-    # 標記並儲存前半段
-    if not front_df.empty:
-        front_df['label'] = label
-        front_40_dfs.append(front_df)
-        
-    # 標記並儲存中間段
-    if not middle_df.empty:
-        middle_df['label'] = label
-        middle_20_dfs.append(middle_df)
+    # 組合路徑並儲存
+    output_path = os.path.join(output_dir, filename)
+    final_df.to_csv(output_path, index=False, encoding='utf-8-sig')
+    print(f"\n檔案已成功儲存至 {output_path} (共 {len(final_df)} 筆資料)")
 
-    # 標記並儲存後半段
-    if not back_df.empty:
-        back_df['label'] = label
-        back_40_dfs.append(back_df)
+# --- 2. 彙整並儲存 5 個檔案 ---
+print("\n步驟 2: 正在彙整並儲存 5 個最終檔案...")
 
-print("資料分割完成。")
+# Source 檔案
+concat_and_save(source_train_dfs, 'source_train.csv', output_directory)
+concat_and_save(source_val_dfs,   'source_val.csv',   output_directory)
 
-# 2. 處理並儲存「前 40%」組合資料
-if front_40_dfs:
-    front_final_df = pd.concat(front_40_dfs).sort_values(by=time_column_name)
-    # 組合完整的儲存路徑與檔名
-    output_path_front = os.path.join(output_directory, 'source_data.csv')
-    front_final_df.to_csv(output_path_front, index=False, encoding='utf-8-sig')
-    print(f"\n所有時段的「前 40%」資料已成功儲存至 {output_path_front}")
-    print(f"共包含 {len(front_final_df)} 筆資料。")
-else:
-    print("\n沒有找到任何「前 40%」資料可供儲存。")
+# Target 檔案
+concat_and_save(target_train_dfs, 'target_train.csv', output_directory)
+concat_and_save(target_val_dfs,   'target_val.csv',   output_directory)
 
-# 3. 處理並儲存「中間 20%」組合資料
-if middle_20_dfs:
-    middle_final_df = pd.concat(middle_20_dfs).sort_values(by=time_column_name)
-    # 組合完整的儲存路徑與檔名
-    output_path_middle = os.path.join(output_directory, 'test.csv')
-    middle_final_df.to_csv(output_path_middle, index=False, encoding='utf-8-sig')
-    print(f"\n所有時段的「中間 20%」資料已成功儲存至 {output_path_middle}")
-    print(f"共包含 {len(middle_final_df)} 筆資料。")
-else:
-    print("\n沒有找到任何「中間 20%」資料可供儲存。")
+# Test 檔案
+concat_and_save(test_dfs, 'test.csv', output_directory)
 
-# 4. 處理並儲存「後 40%」組合資料
-if back_40_dfs:
-    back_final_df = pd.concat(back_40_dfs).sort_values(by=time_column_name)
-    # 組合完整的儲存路徑與檔名
-    output_path_back = os.path.join(output_directory, 'target_data.csv')
-    back_final_df.to_csv(output_path_back, index=False, encoding='utf-8-sig')
-    print(f"\n所有時段的「後 40%」資料已成功儲存至 {output_path_back}")
-    print(f"共包含 {len(back_final_df)} 筆資料。")
-else:
-    print("\n沒有找到任何「後 40%」資料可供儲存。")
+print("\n--- 所有資料處理與分割已完成 ---")
 

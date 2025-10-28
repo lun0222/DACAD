@@ -13,7 +13,7 @@ from torch.utils.data import Dataset
 
 from utils.augmentations import Injector # <-- 確保這一行在頂部
 # ... (檔案的其餘部分保持不變)
-
+from sklearn.model_selection import train_test_split
 
 def get_dataset(args, domain_type, split_type):
     """
@@ -42,24 +42,15 @@ def get_dataset(args, domain_type, split_type):
             return BoilerDataset_trg(args.path_trg, subject_id=args.id_trg, split_type=split_type, is_cuda=True)
             
     elif "HVAC" in args.path_src: # <-- HVAC 區塊
-        # ===================================================================
-        # START: 修改
-        # ===================================================================
-        # 從 args 物件中獲取特徵列表 (如果 train.py 沒有定義 'features'，則為 None)
-        # eval.py 會從 commandline_args.txt 讀取 saved_args，所以也能取到 'features'
         feature_columns = getattr(args, 'features', None) 
-        
         if domain_type == "source":
-            # 將 feature_columns 傳遞給 Dataset
+            # 將 d_mean, d_std 傳遞給 Dataset
             return HVACDataset(args.path_src, subject_id=args.id_src, split_type=split_type, is_cuda=True,
-                               feature_columns=feature_columns)
+                                feature_columns=feature_columns, d_mean=d_mean, d_std=d_std)
         else:
-            # 將 feature_columns 傳遞給 Dataset
+            # 將 d_mean, d_std 傳遞給 Dataset
             return HVACDataset_trg(args.path_trg, subject_id=args.id_trg, split_type=split_type, is_cuda=True,
-                                   feature_columns=feature_columns)
-        # ===================================================================
-        # END: 修改
-        # ===================================================================
+                                feature_columns=feature_columns, d_mean=d_mean, d_std=d_std)
 
 class MSLDataset(Dataset):
     def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False):
@@ -581,36 +572,55 @@ class BoilerDataset_trg(Dataset):
 # START: 修改 HVAC 類別
 # =============================================================================
 class HVACDataset(Dataset):
-    # 1. 修改 __init__ 以接收 feature_columns
     def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False, 
-                 feature_columns=None): # <-- 新增參數
+                 feature_columns=None, w_size=100, stride=1, 
+                 d_mean=None, d_std=None): # <-- 1. 新增 d_mean, d_std 參數
+        
         self.root_dir = root_dir
         self.subject_id = subject_id
         self.split_type = split_type
         self.is_cuda = is_cuda and torch.cuda.is_available()
         self.verbose = verbose
-        self.feature_columns = feature_columns # <-- 保存參數
+        self.feature_columns = feature_columns
+        self.w = w_size
+        self.s = stride
 
-        self.load_sequence()
+        # 傳入的 d_mean, d_std
+        self.d_mean = d_mean
+        self.d_std = d_std
+        
+        self.sequence = None
+        self.label = None
+
+        self.load_sequence() # 載入並處理資料
+        
+        self.sequence , self.label = self.convert_to_windows(self.w, self.s)
+        
+        # 你的 val 檔案現在保證有 0 和 1, 不會再崩潰
+        self.positive = self.sequence[self.label == 1]
+        self.negative = self.sequence[self.label == 0]
 
     def __len__(self):
         return len(self.sequence)
 
     def __getitem__(self, id_):
+        # 使用我們上次修正過的 __getitem__ 邏輯，以防萬一
         sequence = self.sequence[id_]
         pid_ = np.random.randint(0, len(self.positive))
         positive = self.positive[pid_]
+
         random_choice = np.random.randint(0, 10)
-        if random_choice == 0:
+        if random_choice == 0 and len(self.negative) > 0:
             nid_ = np.random.randint(0, len(self.negative))
             negative = self.negative[nid_]
         else:
-            negative = get_injector(sequence, self.mean, self.std)
+            negative = get_injector(sequence, self.d_mean, self.d_std) # 使用 self.d_mean
 
         sequence_mask = np.ones(sequence.shape)
         label = self.label[id_]
 
         if self.is_cuda:
+            # ... (torch 轉換邏輯不變) ...
             sequence = torch.Tensor(sequence).float().cuda()
             sequence_mask = torch.Tensor(sequence_mask).long().cuda()
             positive = torch.Tensor(positive).float().cuda()
@@ -624,63 +634,85 @@ class HVACDataset(Dataset):
             label = torch.Tensor([label]).long()
 
         sample = {"sequence": sequence, "sequence_mask": sequence_mask, "positive": positive, "negative": negative, "label": label}
-
         return sample
 
-    # 2. 修改 load_sequence 以使用 feature_columns
     def load_sequence(self):
-        # *** 重要：請根據您的數據格式修改此處 ***
-        path_sequence = os.path.join(self.root_dir, (self.subject_id) + ".csv")
+        # --- START: 修正邏輯 ---
         
-        # ===================================================================
-        # START: 修改 - 按名稱選取特徵
-        # ===================================================================
-        # 1. 讀取 CSV 為 pandas DataFrame
-        df = pd.read_csv(path_sequence)
+        # 2. 根據 split_type 決定檔名
+        # 假設你的檔案名稱是 "source_data_train.csv", "source_data_val.csv"
+        # 你的 subject_id 可能是 "source_data"
+        
+        if self.split_type == "train":
+            filename = f"{self.subject_id}_train.csv"
+        elif self.split_type == "val":
+            filename = f"{self.subject_id}_val.csv"
+        elif self.split_type == "test":
+            filename = f"{self.subject_id}.csv" # 或者 "test.csv"，取決於 eval.py 的呼叫
+            # 為了安全起見，如果 eval.py 是用 "source_data" 和 "test" 來呼叫，我們就讀 "test.csv"
+            # 讓我們假設 eval.py 呼叫的 subject_id 是 "test"
+            if self.subject_id == "test":
+                 filename = "test.csv"
+            # **** 注意：這裡的邏輯高度依賴你的檔名和 eval.py ****
+            # **** 為了簡化，我們假設 "test" 模式就是讀 "test.csv" ****
+            # **** 並且 main_HVAC.py 中 args.id_trg 在 test 模式下是 "test" ****
+            #
+            # 我們採用更穩健的假設：
+            # split_type="test" 時，我們就讀 "test.csv" (忽略 subject_id)
+            # 你必須確保 `main/eval.py` 呼叫 `get_dataset` 時 `split_type="test"`
+            
+            # --- 讓我們重新定義檔名邏輯 ---
+            if self.subject_id == "test": # 假設 eval.py 會傳 "test"
+                filename = "test.csv"
+            else:
+                # 假設你的檔名是 source_data_train.csv, target_data_train.csv ...
+                filename = f"{self.subject_id}_{self.split_type}.csv"
+        
+        path_sequence = os.path.join(self.root_dir, filename)
+        if self.verbose: print(f"[HVACDataset] Loading file: {path_sequence}")
+        
+        try:
+            df = pd.read_csv(path_sequence)
+        except FileNotFoundError:
+            print(f"錯誤：找不到檔案 {path_sequence}")
+            print("請確保你的手動分割檔案名稱符合 {subject_id}_{split_type}.csv 格式")
+            print(f"(例如: source_data_train.csv, source_data_val.csv)")
+            raise
 
-        # 2. 假設最後一欄是標籤 (保持不變)
+        # 3. 決定使用哪些特徵欄位 (邏輯不變)
+        cols_to_use = []
+        if self.feature_columns:
+            cols_to_use = self.feature_columns
+        else:
+            cols_to_use = df.columns[2:-1]
+
+        features = df[cols_to_use].astype(float)
         self.label = df.iloc[:, -1].values
 
-        # 3. 根據 self.feature_columns 選擇特徵
-        if self.feature_columns:
-            # 如果有提供特徵名稱，則使用它們
-            if self.verbose:
-                print(f"[HVACDataset] Using specified features: {self.feature_columns}")
-            # 檢查所有請求的特徵是否存在
-            missing_cols = [col for col in self.feature_columns if col not in df.columns]
-            if missing_cols:
-                raise ValueError(f"以下特徵在 CSV 檔案中找不到: {missing_cols}")
-            self.sequence = df[self.feature_columns].astype(float).values
+        # 4. 【關鍵】處理標準化
+        if self.d_mean is None:
+            # 如果沒有傳入 mean/std (只會在 source_train 時發生)
+            if self.verbose: print(f"[HVACDataset] Calculating new mean/std from {filename}")
+            self.d_mean = np.mean(features.values, axis=0)
+            self.d_std = np.std(features.values, axis=0)
+            self.d_std[self.d_std==0.0] = 1.0
         else:
-            # 如果未提供，則使用原本的預設值 (第2欄到倒數第2欄)
-            if self.verbose:
-                print("[HVACDataset] No features specified, using default (cols 2 to -1)")
-            self.sequence = df.iloc[:, 2:-1].astype(float).values
-        # ===================================================================
-        # END: 修改
-        # ===================================================================
-        
-        # *****************************************
+            # 如果有傳入 mean/std (val/test/target 時發生)
+            if self.verbose: print(f"[HVACDataset] Using provided mean/std.")
+            pass # self.d_mean 和 self.d_std 已經被 __init__ 設定
 
-        # Z-score 標準化 (保持不變)
-        self.mean = np.mean(self.sequence, axis=0)
-        self.std = np.std(self.sequence, axis=0)
-        self.std[self.std==0.0] = 1.0
-        self.sequence = (self.sequence - self.mean) / self.std
-
-        # 轉換為滑動窗口 (保持不變)
-        wsz, stride = 100, 1 
-        self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 1]
-        self.negative = self.sequence[self.label == 0]
+        # 5. 標準化
+        self.sequence = (features - self.d_mean) / self.d_std
+        self.sequence = self.sequence.values
+            
+        # --- END: 修正邏輯 ---
 
     def get_statistic(self):
-        self.mean = np.mean(self.sequence, axis=0)
-        self.std = np.std(self.sequence, axis=0)
-        self.std[self.std==0.0] = 1.0
-        return self.mean, self.std
+        # 這個函式現在回傳的是【訓練集】的統計數據
+        return self.d_mean, self.d_std
 
     def convert_to_windows(self, w_size, stride):
+        # ... (此函式不變) ...
         windows = []
         wlabels = []
         sz = int((self.sequence.shape[0]-w_size)/stride)
@@ -695,27 +727,42 @@ class HVACDataset(Dataset):
         return np.stack(windows), np.stack(wlabels)
 
 class HVACDataset_trg(Dataset):
-    # 1. 修改 __init__ 以接收 feature_columns
     def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False,
-                 feature_columns=None): # <-- 新增參數
+                 feature_columns=None, w_size=100, stride=1,
+                 d_mean=None, d_std=None): # <-- 1. 新增 d_mean, d_std 參數
+        
         self.root_dir = root_dir
         self.subject_id = subject_id
         self.split_type = split_type
         self.is_cuda = is_cuda and torch.cuda.is_available()
         self.verbose = verbose
-        self.feature_columns = feature_columns # <-- 保存參數
+        self.feature_columns = feature_columns
+        self.w = w_size
+        self.s = stride
 
-        self.load_sequence()
+        # 傳入的 d_mean, d_std
+        self.d_mean = d_mean
+        self.d_std = d_std
+        
+        self.sequence = None
+        self.label = None
+
+        self.load_sequence() # 載入並處理資料
+        
+        self.sequence , self.label = self.convert_to_windows(self.w, self.s)
+        self.positive = self.sequence[self.label == 1]
+        self.negative = self.sequence[self.label == 0]
 
     def __len__(self):
         return len(self.sequence)
 
     def __getitem__(self, id_):
+        # ... ( __getitem__ 邏輯不變 ) ...
         sequence = self.sequence[id_]
         pid_ = abs(id_ - np.random.randint(1, 11))
         positive = self.sequence[pid_]
         self.positive = positive
-        negative = get_injector(sequence, self.mean, self.std)
+        negative = get_injector(sequence, self.d_mean, self.d_std) # 使用 self.d_mean
         self.negative = negative
 
         sequence_mask = np.ones(sequence.shape)
@@ -735,63 +782,59 @@ class HVACDataset_trg(Dataset):
             label = torch.Tensor([label]).long()
 
         sample = {"sequence": sequence, "sequence_mask": sequence_mask, "positive": positive, "negative": negative, "label": label}
-
         return sample
 
-    # 2. 修改 load_sequence 以使用 feature_columns
     def load_sequence(self):
-        # *** 重要：請根據您的數據格式修改此處 ***
-        path_sequence = os.path.join(self.root_dir, (self.subject_id) + ".csv")
+        # --- START: 修正邏輯 ---
         
-        # ===================================================================
-        # START: 修改 - 按名稱選取特徵
-        # ===================================================================
-        # 1. 讀取 CSV 為 pandas DataFrame
-        df = pd.read_csv(path_sequence)
+        # 2. 根據 split_type 決定檔名
+        # 假設你的檔名是 target_data_train.csv, target_data_val.csv
+        filename = f"{self.subject_id}_{self.split_type}.csv"
         
-        # 2. 假設最後一欄是標籤 (保持不變)
+        path_sequence = os.path.join(self.root_dir, filename)
+        if self.verbose: print(f"[HVACDataset_trg] Loading file: {path_sequence}")
+        
+        try:
+            df = pd.read_csv(path_sequence)
+        except FileNotFoundError:
+            print(f"錯誤：找不到檔案 {path_sequence}")
+            print("請確保你的手動分割檔案名稱符合 {subject_id}_{split_type}.csv 格式")
+            print(f"(例如: target_data_train.csv, target_data_val.csv)")
+            raise
+
+        # 3. 決定使用哪些特徵欄位 (邏輯不變)
+        cols_to_use = []
+        if self.feature_columns:
+            cols_to_use = self.feature_columns
+        else:
+            cols_to_use = df.columns[2:-1]
+
+        features = df[cols_to_use].astype(float)
         self.label = df.iloc[:, -1].values
 
-        # 3. 根據 self.feature_columns 選擇特徵
-        if self.feature_columns:
-            # 如果有提供特徵名稱，則使用它們
-            if self.verbose:
-                print(f"[HVACDataset_trg] Using specified features: {self.feature_columns}")
-            # 檢查所有請求的特徵是否存在
-            missing_cols = [col for col in self.feature_columns if col not in df.columns]
-            if missing_cols:
-                raise ValueError(f"以下特徵在 CSV 檔案中找不到: {missing_cols}")
-            self.sequence = df[self.feature_columns].astype(float).values
+        # 4. 【關鍵】處理標準化
+        if self.d_mean is None:
+            # target_train 應該【總是】使用 source_train 的 mean/std
+            # 所以這裡【不應該】計算新的
+            if self.verbose: print(f"[HVACDataset_trg] Warning: d_mean is None. Using self-calculated mean/std.")
+            self.d_mean = np.mean(features.values, axis=0)
+            self.d_std = np.std(features.values, axis=0)
+            self.d_std[self.d_std==0.0] = 1.0
         else:
-            # 如果未提供，則使用原本的預設值 (第2欄到倒數第2欄)
-            if self.verbose:
-                print("[HVACDataset_trg] No features specified, using default (cols 2 to -1)")
-            self.sequence = df.iloc[:, 2:-1].astype(float).values
-        # ===================================================================
-        # END: 修改
-        # ===================================================================
-        
-        # *****************************************
+            if self.verbose: print(f"[HVACDataset_trg] Using provided mean/std.")
+            pass # self.d_mean 和 self.d_std 已經被 __init__ 設定
 
-        # Z-score 標準化 (保持不變)
-        self.mean = np.mean(self.sequence, axis=0)
-        self.std = np.std(self.sequence, axis=0)
-        self.std[self.std==0.0] = 1.0
-        self.sequence = (self.sequence - self.mean) / self.std
-
-        # 轉換為滑動窗口 (保持不變)
-        wsz, stride = 100, 1 
-        self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 1]
-        self.negative = self.sequence[self.label == 0]
+        # 5. 標準化
+        self.sequence = (features - self.d_mean) / self.d_std
+        self.sequence = self.sequence.values
+            
+        # --- END: 修正邏輯 ---
 
     def get_statistic(self):
-        self.mean = np.mean(self.sequence, axis=0)
-        self.std = np.std(self.sequence, axis=0)
-        self.std[self.std==0.0] = 1.0
-        return self.mean, self.std
+        return self.d_mean, self.d_std
 
     def convert_to_windows(self, w_size, stride):
+        # ... (此函式不變) ...
         windows = []
         wlabels = []
         sz = int((self.sequence.shape[0]-w_size)/stride)

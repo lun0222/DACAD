@@ -65,29 +65,26 @@ def main(args):
     batch_size = saved_args.batch_size
     eval_batch_size = saved_args.eval_batch_size
 
-    # LOAD SOURCE and TARGET datasets (it is MIMIC-IV vs. AUMC by default)
-    dataset_test_src = get_dataset(saved_args, domain_type="source", split_type="test")
-    dataset_test_trg = get_dataset(saved_args, domain_type="target", split_type="test")
-
-    augmenter = Augmenter()
-
-    # Calculate input_channels_dim and input_static_dim
-    input_channels_dim = dataset_test_src[0]['sequence'].shape[1]
-    input_static_dim = dataset_test_src[0]['static'].shape[0] if 'static' in dataset_test_src[0] else 0
-
-    # Get our algorithm
-    algorithm = get_algorithm(saved_args, input_channels_dim=input_channels_dim, input_static_dim=input_static_dim, device=DEVICE)
-
-    experiment_folder_path = os.path.join(args.experiments_main_folder, args.experiment_folder,
-                                          str(args.id_src) + "-" + str(args.id_trg))
-
-    algorithm.load_state(experiment_folder_path)
-
-    dataloader_test_trg = DataLoader(dataset_test_trg, batch_size=batch_size,
-                                     shuffle=False, num_workers=0, drop_last=True)
-
-    dataloader_test_src = DataLoader(dataset_test_src, batch_size=batch_size,
-                                     shuffle=False, num_workers=0, drop_last=True)
+    # 1. 為了取得正確的 mean/std, 我們【必須】先載入 "source" 的 "train" split
+    log("Loading source train dataset to get normalization stats...")
+    # 假設你 `utils/dataset.py` 也改好了
+    dataset_src_train_for_stats = get_dataset(saved_args, domain_type="source", split_type="train")
+    
+    # 2. 獲取 mean/std
+    d_mean, d_std = dataset_src_train_for_stats.get_statistic()
+    log(f"Using Mean/Std from Source Train (mean[0]={d_mean[0]}, std[0]={d_std[0]})")
+    
+    # 刪除這個僅用於獲取 stats 的 dataset
+    del dataset_src_train_for_stats 
+    
+    # 3. 現在, 載入 "test" splits 並【傳入】 mean/std
+    log("Loading Source Test...")
+    dataset_test_src = get_dataset(saved_args, domain_type="source", split_type="test",
+                                    d_mean=d_mean, d_std=d_std)
+    
+    log("Loading Target Test...")
+    dataset_test_trg = get_dataset(saved_args, domain_type="target", split_type="test",
+                                    d_mean=d_mean, d_std=d_std)
 
     # turn algorithm into eval mode
     algorithm.eval()

@@ -58,18 +58,36 @@ def main(args):
     eval_batch_size = args.eval_batch_size
     num_val_iteration = args.num_val_iteration
 
-    # LOAD SOURCE and TARGET datasets
+# 1. 建立 Source Train Dataset (唯一不傳 d_mean/d_std 的)
+    #    它將根據 "source_data_train.csv" (假設檔名) 計算自己的 mean/std
+    log("Loading Source Train...")
     dataset_src = get_dataset(args, domain_type="source", split_type="train")
-    dataset_val_src = get_dataset(args, domain_type="source", split_type="val")
+    
+    # 2. 【關鍵】從 Source Train 取出 mean 和 std
+    #    *** 這裡定義了 d_mean 和 d_std ***
+    d_mean, d_std = dataset_src.get_statistic()
+    log(f"Using Mean/Std calculated from Source Train (mean[0]={d_mean[0]}, std[0]={d_std[0]})")
 
-    dataset_trg = get_dataset(args, domain_type="target", split_type="train")
-    dataset_val_trg = get_dataset(args, domain_type="target", split_type="val")
+    # 3. 建立 Source Val, 並【傳入】 mean/std
+    log("Loading Source Val...")
+    dataset_val_src = get_dataset(args, domain_type="source", split_type="val", 
+                                  d_mean=d_mean, d_std=d_std)
 
+    # 4. 建立 Target Train, 並【傳入】 mean/std
+    log("Loading Target Train...")
+    dataset_trg = get_dataset(args, domain_type="target", split_type="train", 
+                              d_mean=d_mean, d_std=d_std)
+    
+    # 5. 建立 Target Val, 並【傳入】 mean/std
+    log("Loading Target Val...")
+    dataset_val_trg = get_dataset(args, domain_type="target", split_type="val", 
+                                    d_mean=d_mean, d_std=d_std)
+
+    # 6. 建立 DataLoaders (這部分不變)
     dataloader_src = DataLoader(dataset_src, batch_size=batch_size,
                                 shuffle=True, num_workers=0, drop_last=True)
     dataloader_val_src = DataLoader(dataset_val_src, batch_size=eval_batch_size,
                                     shuffle=True, num_workers=0, drop_last=True)
-
     dataloader_val_trg = DataLoader(dataset_val_trg, batch_size=eval_batch_size,
                                     shuffle=True, num_workers=0, drop_last=True)
 
@@ -77,11 +95,11 @@ def main(args):
     if max_num_val_iteration < num_val_iteration:
         num_val_iteration = max_num_val_iteration
 
-    # Calculate input_channels_dim and input_static_dim
+    # 7. 保持不變 (lines 85-86)
     input_channels_dim = dataset_src[0]['sequence'].shape[1]
     input_static_dim = dataset_src[0]['static'].shape[0] if 'static' in dataset_src[0] else 0
 
-    # Get our algorithm
+    # 8. Get our algorithm (保持不變)
     algorithm = get_algorithm(args, input_channels_dim=input_channels_dim, input_static_dim=input_static_dim, device=DEVICE)
 
     experiment_folder_path = os.path.join(args.experiments_main_folder, args.experiment_folder,
@@ -91,8 +109,9 @@ def main(args):
     count_step = 0
     best_val_score = -100
 
-    src_mean, src_std = dataset_src.get_statistic()
-    trg_mean, trg_std = dataset_src.get_statistic()
+    # 9. 【關鍵】修改這裡，使用上面定義的 d_mean/d_std (lines 94-95)
+    src_mean, src_std = d_mean, d_std 
+    trg_mean, trg_std = d_mean, d_std
     for i in range(args.num_epochs):
         dataloader_trg = DataLoader(dataset_trg, batch_size=batch_size,
                                     shuffle=True, num_workers=0, drop_last=True)
