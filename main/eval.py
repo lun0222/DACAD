@@ -21,6 +21,10 @@ from collections import namedtuple
 from algorithms import get_algorithm
 import torch
 
+from sklearn.manifold import TSNE  
+import matplotlib.pyplot as plt    
+import seaborn as sns              
+
 def main(args):
     DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     with open(os.path.join(args.experiments_main_folder, args.experiment_folder,
@@ -126,6 +130,11 @@ def main(args):
     # turn algorithm into eval mode
     algorithm.eval() # <-- 這裡也不會再報錯
     
+    log("Starting to collect embeddings for t-SNE plot...")
+    all_embeddings = []
+    all_labels = []
+    all_domains = []
+
     # 建立 Dataloaders (這也漏掉了)
     dataloader_test_src = DataLoader(dataset_test_src, batch_size=eval_batch_size,
                                      shuffle=False, num_workers=0, drop_last=False)
@@ -137,6 +146,14 @@ def main(args):
         # 將數據張量傳送到正確的設備 (這也漏掉了)
         for key, value in sample_batched.items():
             sample_batched[key] = sample_batched[key].to(device=DEVICE, non_blocking=True)
+        with torch.no_grad():
+            # 呼叫 get_embedding (此方法定義在 algorithms.py)
+            embeddings = algorithm.get_embedding(sample_batched) 
+            
+        all_embeddings.append(embeddings.cpu().numpy())
+        all_labels.append(sample_batched['label'].cpu().numpy())
+        # 為 Target 數據標記 "Target"
+        all_domains.extend(['Target'] * len(sample_batched['label']))
         algorithm.predict_trg(sample_batched)
 
     # even though the name is "pred_meter_val_trg", in this script it saves test results
@@ -179,6 +196,13 @@ def main(args):
         # 將數據張量傳送到正確的設備 (這也漏掉了)
         for key, value in sample_batched.items():
             sample_batched[key] = sample_batched[key].to(device=DEVICE, non_blocking=True)
+        with torch.no_grad():
+            embeddings = algorithm.get_embedding(sample_batched)
+            
+        all_embeddings.append(embeddings.cpu().numpy())
+        all_labels.append(sample_batched['label'].cpu().numpy())
+        # 為 Source 數據標記 "Source"
+        all_domains.extend(['Source'] * len(sample_batched['label']))
         algorithm.predict_src(sample_batched)
 
     # even though the name is "pred_meter_val_src", in this script it saves test results
@@ -207,6 +231,54 @@ def main(args):
     metrics_pred_test_src = algorithm.pred_meter_val_src.get_metrics()
 
     log_scores(saved_args, dataset_type, metrics_pred_test_src)
+
+    log("Generating t-SNE plot...")
+    try:
+        # 1. 彙整所有數據
+        final_embeddings = np.concatenate(all_embeddings, axis=0)
+        final_labels = np.concatenate(all_labels, axis=0)
+        final_domains = np.array(all_domains) # 已經是一維列表，轉 array 即可
+
+        # 2. 執行 t-SNE
+        #    n_jobs=-1 使用所有 CPU 核心
+        tsne = TSNE(n_components=2, verbose=1, perplexity=40, max_iter=300, n_jobs=-1, random_state=42)
+        embeddings_2d = tsne.fit_transform(final_embeddings)
+
+        # 3. 建立 DataFrame 以便繪圖
+        #    (記住： 1 是正常, 0 是異常)
+        df_tsne = pd.DataFrame({
+            'x': embeddings_2d[:, 0],
+            'y': embeddings_2d[:, 1],
+            'domain': final_domains
+        })
+        # 建立一個組合標籤，就像論文中那樣
+        df_tsne['label_str'] = np.where(final_labels == 1, 'Normal (1)', 'Abnormal (0)')
+        df_tsne['plot_category'] = df_tsne['domain'] + ' - ' + df_tsne['label_str']
+
+        # 4. 使用 Seaborn 繪圖
+        plt.figure(figsize=(12, 10))
+        sns.scatterplot(
+            data=df_tsne,
+            x='x',
+            y='y',
+            hue='plot_category', # 顏色
+            style='domain',      # 形狀
+            s=50,                # 點的大小
+            alpha=0.7
+        )
+        
+        plt.title('t-SNE Visualization of Model Embeddings')
+        plt.legend(loc='best')
+        plt.xlabel('t-SNE Component 1')
+        plt.ylabel('t-SNE Component 2')
+        
+        # 5. 儲存圖片
+        plot_save_path = os.path.join(experiment_folder_path, "tsne_embeddings_plot.png")
+        plt.savefig(plot_save_path, dpi=300)
+        log(f"t-SNE plot saved to {plot_save_path}")
+
+    except Exception as e:
+        log(f"Error generating t-SNE plot: {e}")
 
 # parse command-line arguments and execute the main method
 if __name__ == '__main__':
