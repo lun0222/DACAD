@@ -15,7 +15,7 @@ from utils.augmentations import Injector # <-- 確保這一行在頂部
 # ... (檔案的其餘部分保持不變)
 from sklearn.model_selection import train_test_split
 
-def get_dataset(args, domain_type, split_type):
+def get_dataset(args, domain_type, split_type,d_mean=None, d_std=None):
     """
     Return the correct dataset object that will be fed into datalaoder
     args: args of main script
@@ -52,528 +52,12 @@ def get_dataset(args, domain_type, split_type):
             return HVACDataset_trg(args.path_trg, subject_id=args.id_trg, split_type=split_type, is_cuda=True,
                                 feature_columns=feature_columns, d_mean=d_mean, d_std=d_std)
 
-class MSLDataset(Dataset):
-    def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False):
-        self.root_dir = root_dir
-        self.subject_id = subject_id
-        self.split_type = split_type
-        self.is_cuda = is_cuda and torch.cuda.is_available()
-        self.verbose = verbose
-
-        self.load_sequence()
-
-    def __len__(self):
-        return len(self.sequence)
-
-    def __getitem__(self, id_):
-        sequence = self.sequence[id_]
-        pid_ = np.random.randint(0, len(self.positive))
-        positive = self.positive[pid_]
-        random_choice = np.random.randint(0, 10)
-        if random_choice == 0:
-            nid_ = np.random.randint(0, len(self.negative))
-            negative = self.negative[nid_]
-        else:
-            negative = get_injector(sequence, self.mean, self.std)
-
-        # self.mean = None
-        # self.std = None
-        sequence_mask = np.ones(sequence.shape)
-        label = self.label[id_]
-
-        if self.is_cuda:
-            sequence = torch.Tensor(sequence).float().cuda()
-            sequence_mask = torch.Tensor(sequence_mask).long().cuda()
-            positive = torch.Tensor(positive).float().cuda()
-            negative = torch.Tensor(negative).float().cuda()
-            label = torch.Tensor([label]).long().cuda()
-        else:
-            sequence = torch.Tensor(sequence).float()
-            sequence_mask = torch.Tensor(sequence_mask).long()
-            positive = torch.Tensor(positive).float()
-            negative = torch.Tensor(negative).float()
-            label = torch.Tensor([label]).long()
-
-        sample = {"sequence": sequence, "sequence_mask": sequence_mask, "positive": positive, "negative": negative, "label": label}
-
-        return sample
-
-    def load_sequence(self):
-        with open(os.path.join(self.root_dir, 'labeled_anomalies.csv'), 'r') as file:
-            csv_reader = pd.read_csv(file, delimiter=',')
-
-        # data_info = csv_reader[csv_reader['spacecraft'] == 'MSL']
-        data_info = csv_reader[csv_reader['chan_id'] == self.subject_id]
-
-        path_sequence = os.path.join(self.root_dir, 'test/', str(self.subject_id) + ".npy")
-        temp = np.load(path_sequence)
-        if np.any(sum(np.isnan(temp))!=0):
-            print('Data contains NaN which replaced with zero')
-            temp = np.nan_to_num(temp)
-
-        self.mean = np.mean(temp, axis=0)
-        self.std = np.std(temp, axis=0)
-        self.std[self.std==0.0] = 1.0
-        self.sequence = (temp - self.mean) / self.std
-
-        labels = []
-        for index, row in data_info.iterrows():
-            anomalies = ast.literal_eval(row['anomaly_sequences'])
-            length = row.iloc[-1]
-            label = np.zeros([length], dtype=bool)
-            for anomaly in anomalies:
-                label[anomaly[0]:anomaly[1] + 1] = True
-            labels.extend(label)
-        self.label = np.asarray(labels)
-
-        wsz, stride = 100, 1
-        self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 1]
-        self.negative = self.sequence[self.label == 0]
-
-    def get_statistic(self):
-        self.mean = np.mean(self.sequence, axis=0)
-        self.std = np.std(self.sequence, axis=0)
-        self.std[self.std==0.0] = 1.0
-        return self.mean, self.std
-
-    def convert_to_windows(self, w_size, stride):
-        windows = []
-        wlabels = []
-        sz = int((self.sequence.shape[0]-w_size)/stride)
-        for i in range(0, sz):
-            st = i * stride
-            w = self.sequence[st:st+w_size]
-            if self.label[st:st+w_size].any() > 0:
-                lbl = 1
-            else: lbl=0
-            windows.append(w)
-            wlabels.append(lbl)
-        return np.stack(windows), np.stack(wlabels)
-
-class MSLDataset_trg(Dataset):
-    def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False):
-        self.root_dir = root_dir
-        self.subject_id = subject_id
-        self.split_type = split_type
-        self.is_cuda = is_cuda and torch.cuda.is_available()
-        self.verbose = verbose
-
-        self.load_sequence()
-
-    def __len__(self):
-        return len(self.sequence)
-
-    def __getitem__(self, id_):
-        sequence = self.sequence[id_]
-        pid_ = abs(id_ - np.random.randint(1, 11))
-        positive = self.sequence[pid_]
-        self.positive = positive
-        negative = get_injector(sequence, self.mean, self.std)
-        self.negative = negative
-        # self.mean = None
-        # self.std = None
-        sequence_mask = np.ones(sequence.shape)
-        label = self.label[id_]
-
-        if self.is_cuda:
-            sequence = torch.Tensor(sequence).float().cuda()
-            sequence_mask = torch.Tensor(sequence_mask).long().cuda()
-            positive = torch.Tensor(positive).float().cuda()
-            negative = torch.Tensor(negative).float().cuda()
-            label = torch.Tensor([label]).long().cuda()
-        else:
-            sequence = torch.Tensor(sequence).float()
-            sequence_mask = torch.Tensor(sequence_mask).long()
-            positive = torch.Tensor(positive).float()
-            negative = torch.Tensor(negative).float()
-            label = torch.Tensor([label]).long()
-
-        sample = {"sequence": sequence, "sequence_mask": sequence_mask, "positive": positive, "negative": negative, "label": label}
-
-        return sample
-
-    def load_sequence(self):
-        with open(os.path.join(self.root_dir, 'labeled_anomalies.csv'), 'r') as file:
-            csv_reader = pd.read_csv(file, delimiter=',')
-
-        # data_info = csv_reader[csv_reader['spacecraft'] == 'MSL']
-        data_info = csv_reader[csv_reader['chan_id'] == self.subject_id]
-
-        path_sequence = os.path.join(self.root_dir, 'test/', str(self.subject_id) + ".npy")
-        temp = np.load(path_sequence)
-        if np.any(sum(np.isnan(temp))!=0):
-            print('Data contains NaN which replaced with zero')
-            temp = np.nan_to_num(temp)
-
-        self.mean = np.mean(temp, axis=0)
-        self.std = np.std(temp, axis=0)
-        self.std[self.std==0.0] = 1.0
-        self.sequence = (temp - self.mean) / self.std
-
-        labels = []
-        for index, row in data_info.iterrows():
-            anomalies = ast.literal_eval(row['anomaly_sequences'])
-            length = row.iloc[-1]
-            label = np.zeros([length], dtype=bool)
-            for anomaly in anomalies:
-                label[anomaly[0]:anomaly[1] + 1] = True
-            labels.extend(label)
-        self.label = np.asarray(labels)
-
-        wsz, stride = 100, 1
-        self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 1]
-        self.negative = self.sequence[self.label == 0]
-
-    def get_statistic(self):
-        self.mean = np.mean(self.sequence, axis=0)
-        self.std = np.std(self.sequence, axis=0)
-        self.std[self.std==0.0] = 1.0
-        return self.mean, self.std
-
-    def convert_to_windows(self, w_size, stride):
-        windows = []
-        wlabels = []
-        sz = int((self.sequence.shape[0] - w_size) / stride)
-        for i in range(0, sz):
-            st = i * stride
-            w = self.sequence[st:st + w_size]
-            if self.label[st:st + w_size].any() > 0:
-                lbl = 1
-            else:
-                lbl = 0
-            windows.append(w)
-            wlabels.append(lbl)
-        return np.stack(windows), np.stack(wlabels)
-
-class SMDDataset(Dataset):
-    def __init__(self, root_dir, subject_id, split_type="train", is_cuda=False, verbose=False):
-        self.root_dir = root_dir
-        self.subject_id = subject_id
-        self.split_type = split_type
-        self.is_cuda = is_cuda and torch.cuda.is_available()
-        self.verbose = verbose
-
-        self.load_sequence()
-
-    def __len__(self):
-        return len(self.sequence)
-
-    def __getitem__(self, id_):
-        sequence = self.sequence[id_]
-        pid_ = np.random.randint(0, len(self.positive))
-        positive = self.positive[pid_]
-        random_choice = np.random.randint(0, 10)
-        if random_choice == 0:
-            nid_ = np.random.randint(0, len(self.negative))
-            negative = self.negative[nid_]
-        else:
-            negative = get_injector(sequence, self.mean, self.std)
-
-        sequence_mask = np.ones(sequence.shape)
-        label = self.label[id_]
-
-        if self.is_cuda:
-            sequence = torch.Tensor(sequence).float().cuda()
-            sequence_mask = torch.Tensor(sequence_mask).long().cuda()
-            positive = torch.Tensor(positive).float().cuda()
-            negative = torch.Tensor(negative).float().cuda()
-            label = torch.Tensor([label]).long().cuda()
-        else:
-            sequence = torch.Tensor(sequence).to(torch.float32)
-            sequence_mask = torch.Tensor(sequence_mask).long()
-            positive = torch.Tensor(positive).to(torch.float32)
-            negative = torch.Tensor(negative).to(torch.float32)
-            label = torch.Tensor([label]).long()
-
-        sample = {"sequence": sequence, "sequence_mask": sequence_mask, "positive": positive, "negative": negative, "label": label}
-
-        return sample
-
-    def load_sequence(self):
-        path_sequence = os.path.join(self.root_dir, "machine-" + str(self.subject_id) + ".txt")
-        self.sequence = np.loadtxt(path_sequence, delimiter=",")
-
-        # if self.split_type == "test":
-        self.mean = np.mean(self.sequence, axis=0)
-        self.std = np.std(self.sequence, axis=0)
-        self.std[self.std==0.0] = 1.0
-        self.sequence = (self.sequence - self.mean) / self.std
-
-        path_label = os.path.join(self.root_dir+ "_label", "machine-" + str(self.subject_id) + ".txt")
-        self.label = np.loadtxt(path_label)
-
-        wsz, stride = 100, 1
-        self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 1]
-        self.negative = self.sequence[self.label == 0]
-
-    def get_statistic(self):
-        self.mean = np.mean(self.sequence, axis=0)
-        self.std = np.std(self.sequence, axis=0)
-        self.std[self.std==0.0] = 1.0
-        return self.mean, self.std
-
-    def convert_to_windows(self, w_size, stride):
-        windows = []
-        wlabels = []
-        sz = int((self.sequence.shape[0]-w_size)/stride)
-        for i in range(0, sz):
-            st = i * stride
-            w = self.sequence[st:st+w_size]
-            if self.label[st:st+w_size].any() > 0:
-                lbl = 1
-            else: lbl=0
-            windows.append(w)
-            wlabels.append(lbl)
-        return np.stack(windows), np.stack(wlabels)
-
-class SMDDataset_trg(Dataset):
-    def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False):
-        self.root_dir = root_dir
-        self.subject_id = subject_id
-        self.split_type = split_type
-        self.is_cuda = is_cuda and torch.cuda.is_available()
-        self.verbose = verbose
-
-        self.load_sequence()
-
-    def __len__(self):
-        return len(self.sequence)
-
-    def __getitem__(self, id_):
-        sequence = self.sequence[id_]
-        pid_ = abs(id_ - np.random.randint(1, 11))
-        positive = self.sequence[pid_]
-        self.positive = positive
-        negative = get_injector(sequence, self.mean, self.std)
-        self.negative = negative
-
-        sequence_mask = np.ones(sequence.shape)
-        label = self.label[id_]
-
-        if self.is_cuda:
-            sequence = torch.Tensor(sequence).float().cuda()
-            sequence_mask = torch.Tensor(sequence_mask).long().cuda()
-            positive = torch.Tensor(positive).float().cuda()
-            negative = torch.Tensor(negative).float().cuda()
-            label = torch.Tensor([label]).long().cuda()
-        else:
-            sequence = torch.Tensor(sequence).to(torch.float32)
-            sequence_mask = torch.Tensor(sequence_mask).long()
-            positive = torch.Tensor(positive).to(torch.float32)
-            negative = torch.Tensor(negative).to(torch.float32)
-            label = torch.Tensor([label]).long()
-
-        sample = {"sequence": sequence, "sequence_mask": sequence_mask, "positive": positive, "negative": negative, "label": label}
-
-        return sample
-
-    def load_sequence(self):
-        path_sequence = os.path.join(self.root_dir, "machine-" + str(self.subject_id) + ".txt")
-        self.sequence = np.loadtxt(path_sequence, delimiter=",")
-
-        # if self.split_type == "test":
-        self.mean = np.mean(self.sequence, axis=0)
-        self.std = np.std(self.sequence, axis=0)
-        self.std[self.std==0.0] = 1.0
-        self.sequence = (self.sequence - self.mean) / self.std
-
-        path_label = os.path.join(self.root_dir+ "_label", "machine-" + str(self.subject_id) + ".txt")
-        self.label = np.loadtxt(path_label)
-
-        wsz, stride = 100, 1
-        self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 1]
-        self.negative = self.sequence[self.label == 0]
-
-    def get_statistic(self):
-        self.mean = np.mean(self.sequence, axis=0)
-        self.std = np.std(self.sequence, axis=0)
-        self.std[self.std==0.0] = 1.0
-        return self.mean, self.std
-
-    def convert_to_windows(self, w_size, stride):
-        windows = []
-        wlabels = []
-        sz = int((self.sequence.shape[0] - w_size) / stride)
-        for i in range(0, sz):
-            st = i * stride
-            w = self.sequence[st:st + w_size]
-            if self.label[st:st + w_size].any() > 0:
-                lbl = 1
-            else:
-                lbl = 0
-            windows.append(w)
-            wlabels.append(lbl)
-        return np.stack(windows), np.stack(wlabels)
-
-class BoilerDataset(Dataset):
-    def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False):
-        self.root_dir = root_dir
-        self.subject_id = subject_id
-        self.split_type = split_type
-        self.is_cuda = is_cuda and torch.cuda.is_available()
-        self.verbose = verbose
-
-        self.load_sequence()
-
-    def __len__(self):
-        return len(self.sequence)
-
-    def __getitem__(self, id_):
-        sequence = self.sequence[id_]
-        pid_ = np.random.randint(0, len(self.positive))
-        positive = self.positive[pid_]
-        random_choice = np.random.randint(0, 10)
-        if random_choice == 0:
-            nid_ = np.random.randint(0, len(self.negative))
-            negative = self.negative[nid_]
-        else:
-            negative = get_injector(sequence, self.mean, self.std)
-
-        sequence_mask = np.ones(sequence.shape)
-        label = self.label[id_]
-
-        if self.is_cuda:
-            sequence = torch.Tensor(sequence).float().cuda()
-            sequence_mask = torch.Tensor(sequence_mask).long().cuda()
-            positive = torch.Tensor(positive).float().cuda()
-            negative = torch.Tensor(negative).float().cuda()
-            label = torch.Tensor([label]).long().cuda()
-        else:
-            sequence = torch.Tensor(sequence).float()
-            sequence_mask = torch.Tensor(sequence_mask).long()
-            positive = torch.Tensor(positive).float()
-            negative = torch.Tensor(negative).float()
-            label = torch.Tensor([label]).long()
-
-        sample = {"sequence": sequence, "sequence_mask": sequence_mask, "positive": positive, "negative": negative, "label": label}
-
-        return sample
-
-    def load_sequence(self):
-        path_sequence = os.path.join(self.root_dir, (self.subject_id) + ".csv")
-        self.sequence = pd.read_csv(path_sequence).values
-        self.label = self.sequence[:, -1]
-        self.sequence = self.sequence[:, 2:-1].astype(float)
-
-        # if self.split_type == "test":
-        self.mean = np.mean(self.sequence, axis=0)
-        self.std = np.std(self.sequence, axis=0)
-        self.std[self.std==0.0] = 1.0
-        self.sequence = (self.sequence - self.mean) / self.std
-
-        wsz, stride = 100, 1
-        self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 1]
-        self.negative = self.sequence[self.label == 0]
-
-    def get_statistic(self):
-        self.mean = np.mean(self.sequence, axis=0)
-        self.std = np.std(self.sequence, axis=0)
-        self.std[self.std==0.0] = 1.0
-        return self.mean, self.std
-
-    def convert_to_windows(self, w_size, stride):
-        windows = []
-        wlabels = []
-        sz = int((self.sequence.shape[0]-w_size)/stride)
-        for i in range(0, sz):
-            st = i * stride
-            w = self.sequence[st:st+w_size]
-            if self.label[st:st+w_size].any() > 0:
-                lbl = 1
-            else: lbl=0
-            windows.append(w)
-            wlabels.append(lbl)
-        return np.stack(windows), np.stack(wlabels)
-
-class BoilerDataset_trg(Dataset):
-    def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False):
-        self.root_dir = root_dir
-        self.subject_id = subject_id
-        self.split_type = split_type
-        self.is_cuda = is_cuda and torch.cuda.is_available()
-        self.verbose = verbose
-
-        self.load_sequence()
-
-    def __len__(self):
-        return len(self.sequence)
-
-    def __getitem__(self, id_):
-        sequence = self.sequence[id_]
-        pid_ = abs(id_ - np.random.randint(1, 11))
-        positive = self.sequence[pid_]
-        self.positive = positive
-        negative = get_injector(sequence, self.mean, self.std)
-        self.negative = negative
-
-        sequence_mask = np.ones(sequence.shape)
-        label = self.label[id_]
-
-        if self.is_cuda:
-            sequence = torch.Tensor(sequence).float().cuda()
-            sequence_mask = torch.Tensor(sequence_mask).long().cuda()
-            positive = torch.Tensor(positive).float().cuda()
-            negative = torch.Tensor(negative).float().cuda()
-            label = torch.Tensor([label]).long().cuda()
-        else:
-            sequence = torch.Tensor(sequence).float()
-            sequence_mask = torch.Tensor(sequence_mask).long()
-            positive = torch.Tensor(positive).float()
-            negative = torch.Tensor(negative).float()
-            label = torch.Tensor([label]).long()
-
-        sample = {"sequence": sequence, "sequence_mask": sequence_mask, "positive": positive, "negative": negative, "label": label}
-
-        return sample
-
-    def load_sequence(self):
-        path_sequence = os.path.join(self.root_dir, (self.subject_id) + ".csv")
-        self.sequence = pd.read_csv(path_sequence).values
-        self.label = self.sequence[:, -1]
-        self.sequence = self.sequence[:, 2:-1].astype(float)
-
-        # if self.split_type == "test":
-        self.mean = np.mean(self.sequence, axis=0)
-        self.std = np.std(self.sequence, axis=0)
-        self.std[self.std==0.0] = 1.0
-        self.sequence = (self.sequence - self.mean) / self.std
-
-        wsz, stride = 100, 1
-        self.sequence , self.label = self.convert_to_windows(wsz, stride)
-        self.positive = self.sequence[self.label == 1]
-        self.negative = self.sequence[self.label == 0]
-
-    def get_statistic(self):
-        self.mean = np.mean(self.sequence, axis=0)
-        self.std = np.std(self.sequence, axis=0)
-        self.std[self.std==0.0] = 1.0
-        return self.mean, self.std
-
-    def convert_to_windows(self, w_size, stride):
-        windows = []
-        wlabels = []
-        sz = int((self.sequence.shape[0]-w_size)/stride)
-        for i in range(0, sz):
-            st = i * stride
-            w = self.sequence[st:st+w_size]
-            if self.label[st:st+w_size].any() > 0:
-                lbl = 1
-            else: lbl=0
-            windows.append(w)
-            wlabels.append(lbl)
-        return np.stack(windows), np.stack(wlabels)
-
 # =============================================================================
 # START: 修改 HVAC 類別
 # =============================================================================
 class HVACDataset(Dataset):
     def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False, 
-                 feature_columns=None, w_size=100, stride=1, 
+                 feature_columns=None, w_size=60, stride=1, 
                  d_mean=None, d_std=None): # <-- 1. 新增 d_mean, d_std 參數
         
         self.root_dir = root_dir
@@ -637,36 +121,13 @@ class HVACDataset(Dataset):
         return sample
 
     def load_sequence(self):
-        # --- START: 修正邏輯 ---
-        
-        # 2. 根據 split_type 決定檔名
-        # 假設你的檔案名稱是 "source_data_train.csv", "source_data_val.csv"
-        # 你的 subject_id 可能是 "source_data"
-        
-        if self.split_type == "train":
-            filename = f"{self.subject_id}_train.csv"
-        elif self.split_type == "val":
-            filename = f"{self.subject_id}_val.csv"
-        elif self.split_type == "test":
-            filename = f"{self.subject_id}.csv" # 或者 "test.csv"，取決於 eval.py 的呼叫
-            # 為了安全起見，如果 eval.py 是用 "source_data" 和 "test" 來呼叫，我們就讀 "test.csv"
-            # 讓我們假設 eval.py 呼叫的 subject_id 是 "test"
-            if self.subject_id == "test":
-                 filename = "test.csv"
-            # **** 注意：這裡的邏輯高度依賴你的檔名和 eval.py ****
-            # **** 為了簡化，我們假設 "test" 模式就是讀 "test.csv" ****
-            # **** 並且 main_HVAC.py 中 args.id_trg 在 test 模式下是 "test" ****
-            #
-            # 我們採用更穩健的假設：
-            # split_type="test" 時，我們就讀 "test.csv" (忽略 subject_id)
-            # 你必須確保 `main/eval.py` 呼叫 `get_dataset` 時 `split_type="test"`
-            
-            # --- 讓我們重新定義檔名邏輯 ---
-            if self.subject_id == "test": # 假設 eval.py 會傳 "test"
-                filename = "test.csv"
-            else:
-                # 假設你的檔名是 source_data_train.csv, target_data_train.csv ...
-                filename = f"{self.subject_id}_{self.split_type}.csv"
+        if self.split_type == "test":
+            # 根據你的最新說明, 測試檔案叫做 "test_data.csv"
+            filename = "test_data.csv"
+        else:
+            # self.subject_id 是 "source_data", self.split_type 是 "train"
+            # 結果會是 "source_data_train.csv" (這就是你要的)
+            filename = f"{self.subject_id}_{self.split_type}.csv"
         
         path_sequence = os.path.join(self.root_dir, filename)
         if self.verbose: print(f"[HVACDataset] Loading file: {path_sequence}")
@@ -675,8 +136,8 @@ class HVACDataset(Dataset):
             df = pd.read_csv(path_sequence)
         except FileNotFoundError:
             print(f"錯誤：找不到檔案 {path_sequence}")
-            print("請確保你的手動分割檔案名稱符合 {subject_id}_{split_type}.csv 格式")
-            print(f"(例如: source_data_train.csv, source_data_val.csv)")
+            print(f"請確保你的檔案名稱正確 (例如: {filename})")
+            print(f"並且確認你的 main_HVAC.py 中 id_src 是 'source_data', id_trg 是 'target_data'")
             raise
 
         # 3. 決定使用哪些特徵欄位 (邏輯不變)
@@ -728,7 +189,7 @@ class HVACDataset(Dataset):
 
 class HVACDataset_trg(Dataset):
     def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False,
-                 feature_columns=None, w_size=100, stride=1,
+                 feature_columns=None, w_size=60, stride=1,
                  d_mean=None, d_std=None): # <-- 1. 新增 d_mean, d_std 參數
         
         self.root_dir = root_dir
@@ -785,11 +246,13 @@ class HVACDataset_trg(Dataset):
         return sample
 
     def load_sequence(self):
-        # --- START: 修正邏輯 ---
-        
-        # 2. 根據 split_type 決定檔名
-        # 假設你的檔名是 target_data_train.csv, target_data_val.csv
-        filename = f"{self.subject_id}_{self.split_type}.csv"
+        if self.split_type == "test":
+            # 根據你的最新說明, 測試檔案叫做 "test_data.csv"
+            filename = "test_data.csv"
+        else:
+            # self.subject_id 是 "target_data", self.split_type 是 "train"
+            # 結果會是 "target_data_train.csv" (這就是你要的)
+            filename = f"{self.subject_id}_{self.split_type}.csv"
         
         path_sequence = os.path.join(self.root_dir, filename)
         if self.verbose: print(f"[HVACDataset_trg] Loading file: {path_sequence}")
@@ -798,8 +261,8 @@ class HVACDataset_trg(Dataset):
             df = pd.read_csv(path_sequence)
         except FileNotFoundError:
             print(f"錯誤：找不到檔案 {path_sequence}")
-            print("請確保你的手動分割檔案名稱符合 {subject_id}_{split_type}.csv 格式")
-            print(f"(例如: target_data_train.csv, target_data_val.csv)")
+            print(f"請確保你的檔案名稱正確 (例如: {filename})")
+            print(f"並且確認你的 main_HVAC.py 中 id_src 是 'source_data', id_trg 是 'target_data'")
             raise
 
         # 3. 決定使用哪些特徵欄位 (邏輯不變)

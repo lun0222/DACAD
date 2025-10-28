@@ -1,0 +1,21 @@
+Using device: cuda
+Loading source train dataset to get normalization stats...
+Using Mean/Std from Source Train (mean[0]=21.16112037037037, std[0]=2.0999530785265255)
+Loading Source Test...
+Loading Target Test...
+Target results saved to results\HVAC\target_data-source_data\predictions_test_target.csv
+TARGET RESULTS
+loaded from d:\DACAD\datasets\HVAC
+
+AUPRC score is : 1.0000 
+Best F1 score is : 1.0000 
+Best Prec score is : 1.0000 
+Best Rec score is : 1.0000 
+Source results saved to results\HVAC\target_data-source_data\predictions_test_source.csv
+SOURCE RESULTS
+loaded from d:\DACAD\datasets\HVAC
+
+AUPRC score is : 1.0000 
+Best F1 score is : 1.0000 
+Best Prec score is : 1.0000 
+Best Rec score is : 1.0000 

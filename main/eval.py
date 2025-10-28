@@ -32,6 +32,7 @@ def main(args):
     # configure our logger
     log = get_logger(os.path.join(saved_args.experiments_main_folder, args.experiment_folder,
                                   str(args.id_src) + "-" + str(saved_args.id_trg), "eval_" + saved_args.log))
+    log(f"Using device: {DEVICE}") # <-- 建議新增
 
     # Some functions and variables for logging
     dataset_type = get_dataset_type(saved_args)
@@ -86,10 +87,56 @@ def main(args):
     dataset_test_trg = get_dataset(saved_args, domain_type="target", split_type="test",
                                     d_mean=d_mean, d_std=d_std)
 
+    # =============================================================================
+    # START: 【重要修復】初始化 Algorithm
+    # =============================================================================
+    
+    # 4. 從測試集中獲取模型需要的輸入維度
+    try:
+        # 檢查 dataset_test_src 是否為空
+        if len(dataset_test_src) == 0:
+            log("錯誤：Source 測試資料集為空 (長度為 0)。")
+            log("請檢查 'test_data.csv' 檔案是否包含數據。")
+            sys.exit(1)
+            
+        input_channels_dim = dataset_test_src[0]['sequence'].shape[1]
+        input_static_dim = dataset_test_src[0]['static'].shape[0] if 'static' in dataset_test_src[0] else 0
+    
+    except IndexError as e:
+        log(f"錯誤：無法從測試資料集獲取維度: {e}")
+        log("請檢查 'test_data.csv' 檔案是否正確。")
+        sys.exit(1) # 終止程式
+    except Exception as e:
+        log(f"載入資料集維度時發生未知錯誤: {e}")
+        sys.exit(1)
+
+    # 5. 建立 algorithm 物件
+    #    (saved_args 包含了所有 train.py 的設定)
+    algorithm = get_algorithm(saved_args, input_channels_dim=input_channels_dim, input_static_dim=input_static_dim, device=DEVICE)
+    
+    # =============================================================================
+    # END: 【重要修復】
+    # =============================================================================
+
+    experiment_folder_path = os.path.join(saved_args.experiments_main_folder, args.experiment_folder,
+                                          str(args.id_src) + "-" + str(saved_args.id_trg))
+
+    algorithm.load_state(experiment_folder_path) # <-- 現在 'algorithm' 已經被定義
+
     # turn algorithm into eval mode
-    algorithm.eval()
+    algorithm.eval() # <-- 這裡也不會再報錯
+    
+    # 建立 Dataloaders (這也漏掉了)
+    dataloader_test_src = DataLoader(dataset_test_src, batch_size=eval_batch_size,
+                                     shuffle=False, num_workers=0, drop_last=False)
+    dataloader_test_trg = DataLoader(dataset_test_trg, batch_size=eval_batch_size,
+                                     shuffle=False, num_workers=0, drop_last=False)
+
 
     for i_batch, sample_batched in enumerate(dataloader_test_trg):
+        # 將數據張量傳送到正確的設備 (這也漏掉了)
+        for key, value in sample_batched.items():
+            sample_batched[key] = sample_batched[key].to(device=DEVICE, non_blocking=True)
         algorithm.predict_trg(sample_batched)
 
     # even though the name is "pred_meter_val_trg", in this script it saves test results
@@ -129,6 +176,9 @@ def main(args):
         df_trg.to_csv(fname, mode='a', header=True, index=False)
 
     for i_batch, sample_batched in enumerate(dataloader_test_src):
+        # 將數據張量傳送到正確的設備 (這也漏掉了)
+        for key, value in sample_batched.items():
+            sample_batched[key] = sample_batched[key].to(device=DEVICE, non_blocking=True)
         algorithm.predict_src(sample_batched)
 
     # even though the name is "pred_meter_val_src", in this script it saves test results

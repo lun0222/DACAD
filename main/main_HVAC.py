@@ -24,12 +24,9 @@ if __name__ == '__main__':
         print(f"錯誤：找不到數據集路徑 {dataset_path}")
         sys.exit()
         
-    all_files = os.listdir(dataset_path)
-
-    # 2. 找到所有 .csv 檔案
-    files = [name[:-4] for name in all_files if name.endswith('.csv')]
+    files = ["source_data", "target_data"]
     files = sorted(files)
-    
+
     # 3. 獲取 train.py 和 eval.py 的絕對路徑
     train_script = os.path.join(current_dir, 'train.py')
     eval_script = os.path.join(current_dir, 'eval.py')
@@ -62,7 +59,7 @@ if __name__ == '__main__':
                     '--path_trg', dataset_path,
                     '--id_src', src,
                     '--id_trg', trg,
-                    '--num_epochs', '20',
+                    '--num_epochs', '5',
                     '--batch_size', '128',
                     '--eval_batch_size', '256',
                     '--learning_rate', '1e-4',
