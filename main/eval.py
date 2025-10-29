@@ -193,7 +193,6 @@ def main(args):
         df_trg.to_csv(fname, mode='a', header=True, index=False)
 
     for i_batch, sample_batched in enumerate(dataloader_test_src):
-        # 將數據張量傳送到正確的設備 (這也漏掉了)
         for key, value in sample_batched.items():
             sample_batched[key] = sample_batched[key].to(device=DEVICE, non_blocking=True)
         with torch.no_grad():

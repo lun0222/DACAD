@@ -59,7 +59,7 @@ if __name__ == '__main__':
                     '--path_trg', dataset_path,
                     '--id_src', src,
                     '--id_trg', trg,
-                    '--num_epochs', '20',
+                    '--num_epochs', '40',
                     '--batch_size', '128',
                     '--eval_batch_size', '256',
                     '--learning_rate', '1e-4',

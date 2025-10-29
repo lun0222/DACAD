@@ -324,3 +324,323 @@ Best F1 score is : 0.9993
 VALIDATION TARGET PREDICTIONS
 AUPRC score is : 0.9999 
 Best F1 score is : 0.9993 
+Epoch: [20][10/75]	L_Src_Sup 5.0504e-01 (3.2848e-01)	L_Trg_Inj 5.5861e-01 (4.9930e-01)	Loss Disc 6.9314e-01 (6.9321e-01)	Loss Pred 3.0068e-01 (2.9960e-01)	Loss TOTAL 7.5361e-01 (7.8150e-01)
+Epoch: [20][20/75]	L_Src_Sup 0.0000e+00 (2.0573e-01)	L_Trg_Inj 3.9924e-01 (4.8848e-01)	Loss Disc 6.9312e-01 (6.9319e-01)	Loss Pred 3.1833e-01 (3.0907e-01)	Loss TOTAL 7.0481e-01 (7.5135e-01)
+Epoch: [20][30/75]	L_Src_Sup 3.9131e-01 (2.2507e-01)	L_Trg_Inj 4.6893e-01 (4.4670e-01)	Loss Disc 6.9311e-01 (6.9320e-01)	Loss Pred 3.2646e-01 (3.0779e-01)	Loss TOTAL 7.5904e-01 (7.4616e-01)
+Epoch: [20][40/75]	L_Src_Sup 2.3398e-01 (2.2698e-01)	L_Trg_Inj 4.7092e-01 (4.5228e-01)	Loss Disc 6.9295e-01 (6.9319e-01)	Loss Pred 3.5481e-01 (3.1186e-01)	Loss TOTAL 7.7177e-01 (7.4748e-01)
+Epoch: [20][50/75]	L_Src_Sup 1.0415e-01 (2.0403e-01)	L_Trg_Inj 2.6883e-01 (4.3534e-01)	Loss Disc 6.9309e-01 (6.9319e-01)	Loss Pred 3.6377e-01 (3.0969e-01)	Loss TOTAL 7.4761e-01 (7.3710e-01)
+Epoch: [20][60/75]	L_Src_Sup 3.4856e-01 (2.1287e-01)	L_Trg_Inj 3.8432e-01 (4.2531e-01)	Loss Disc 6.9340e-01 (6.9320e-01)	Loss Pred 2.8262e-01 (3.0830e-01)	Loss TOTAL 7.0261e-01 (7.3683e-01)
+Epoch: [20][70/75]	L_Src_Sup 0.0000e+00 (2.0628e-01)	L_Trg_Inj 3.2513e-01 (4.1213e-01)	Loss Disc 6.9324e-01 (6.9320e-01)	Loss Pred 2.4077e-01 (3.0623e-01)	Loss TOTAL 6.1991e-01 (7.3203e-01)
+Epoch: [20][75/75]	L_Src_Sup 3.4320e-01 (2.0472e-01)	L_Trg_Inj 2.9906e-01 (4.0707e-01)	Loss Disc 6.9315e-01 (6.9319e-01)	Loss Pred 3.4084e-01 (3.0641e-01)	Loss TOTAL 7.9577e-01 (7.3097e-01)
+VALIDATION RESULTS
+Epoch: [20][12/12]	L_Src_Sup 3.4354e-01 (1.5999e-01)	L_Trg_Inj 3.6932e-01 (3.7711e-01)	Loss Disc 6.9325e-01 (6.9320e-01)	Loss Pred 2.8245e-01 (2.9612e-01)	Loss TOTAL 7.0036e-01 (6.9643e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 0.9999 
+Best F1 score is : 0.9993 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 0.9999 
+Best F1 score is : 0.9993 
+Epoch: [21][10/75]	L_Src_Sup 3.6331e-01 (1.9599e-01)	L_Trg_Inj 8.9572e-01 (4.2877e-01)	Loss Disc 6.9331e-01 (6.9326e-01)	Loss Pred 2.7856e-01 (2.9552e-01)	Loss TOTAL 7.5112e-01 (7.1120e-01)
+Epoch: [21][20/75]	L_Src_Sup 9.2960e-04 (2.3492e-01)	L_Trg_Inj 5.2357e-01 (4.7519e-01)	Loss Disc 6.9325e-01 (6.9324e-01)	Loss Pred 2.2597e-01 (2.9688e-01)	Loss TOTAL 6.2504e-01 (7.2553e-01)
+Epoch: [21][30/75]	L_Src_Sup 3.0605e-01 (2.3421e-01)	L_Trg_Inj 4.7679e-01 (4.8780e-01)	Loss Disc 6.9324e-01 (6.9322e-01)	Loss Pred 2.2560e-01 (2.8737e-01)	Loss TOTAL 6.5051e-01 (7.1380e-01)
+Epoch: [21][40/75]	L_Src_Sup 1.2355e-01 (2.1909e-01)	L_Trg_Inj 3.0346e-01 (4.5943e-01)	Loss Disc 6.9270e-01 (6.9318e-01)	Loss Pred 3.2668e-01 (2.9206e-01)	Loss TOTAL 7.1574e-01 (7.1222e-01)
+Epoch: [21][50/75]	L_Src_Sup 1.7460e-01 (2.2477e-01)	L_Trg_Inj 4.0143e-01 (4.4008e-01)	Loss Disc 6.9333e-01 (6.9321e-01)	Loss Pred 2.7271e-01 (2.9208e-01)	Loss TOTAL 6.7698e-01 (7.1908e-01)
+Epoch: [21][60/75]	L_Src_Sup 9.4196e-02 (2.1348e-01)	L_Trg_Inj 3.5680e-01 (4.2214e-01)	Loss Disc 6.9301e-01 (6.9320e-01)	Loss Pred 3.7679e-01 (2.9491e-01)	Loss TOTAL 7.6839e-01 (7.1788e-01)
+Epoch: [21][70/75]	L_Src_Sup 1.0716e-01 (2.1728e-01)	L_Trg_Inj 4.6473e-01 (4.2152e-01)	Loss Disc 6.9305e-01 (6.9321e-01)	Loss Pred 3.5516e-01 (2.9404e-01)	Loss TOTAL 7.5888e-01 (7.2170e-01)
+Epoch: [21][75/75]	L_Src_Sup 0.0000e+00 (2.1428e-01)	L_Trg_Inj 3.9181e-01 (4.2071e-01)	Loss Disc 6.9322e-01 (6.9321e-01)	Loss Pred 2.4854e-01 (2.9541e-01)	Loss TOTAL 6.3433e-01 (7.2154e-01)
+VALIDATION RESULTS
+Epoch: [21][12/12]	L_Src_Sup 4.0773e-01 (2.0933e-01)	L_Trg_Inj 3.5871e-01 (3.6238e-01)	Loss Disc 6.9324e-01 (6.9320e-01)	Loss Pred 2.8183e-01 (2.8617e-01)	Loss TOTAL 7.5411e-01 (6.9563e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 0.9998 
+Best F1 score is : 0.9993 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 0.9998 
+Best F1 score is : 0.9993 
+Epoch: [22][10/75]	L_Src_Sup 0.0000e+00 (1.6955e-01)	L_Trg_Inj 4.4667e-01 (4.0063e-01)	Loss Disc 6.9322e-01 (6.9325e-01)	Loss Pred 2.5760e-01 (2.6824e-01)	Loss TOTAL 6.4888e-01 (6.9185e-01)
+Epoch: [22][20/75]	L_Src_Sup 1.8111e-01 (1.7406e-01)	L_Trg_Inj 3.5656e-01 (4.0846e-01)	Loss Disc 6.9305e-01 (6.9322e-01)	Loss Pred 3.8575e-01 (2.7710e-01)	Loss TOTAL 7.8605e-01 (6.9194e-01)
+Epoch: [22][30/75]	L_Src_Sup 3.5379e-01 (2.0281e-01)	L_Trg_Inj 4.9314e-01 (4.2728e-01)	Loss Disc 6.9330e-01 (6.9322e-01)	Loss Pred 2.6597e-01 (2.7971e-01)	Loss TOTAL 6.9731e-01 (7.0131e-01)
+Epoch: [22][40/75]	L_Src_Sup 0.0000e+00 (1.8195e-01)	L_Trg_Inj 3.8371e-01 (4.3644e-01)	Loss Disc 6.9324e-01 (6.9321e-01)	Loss Pred 3.0862e-01 (2.8402e-01)	Loss TOTAL 6.9362e-01 (7.0146e-01)
+Epoch: [22][50/75]	L_Src_Sup 1.7380e-01 (1.8714e-01)	L_Trg_Inj 4.0263e-01 (4.3268e-01)	Loss Disc 6.9317e-01 (6.9320e-01)	Loss Pred 2.6396e-01 (2.8753e-01)	Loss TOTAL 6.6818e-01 (7.0630e-01)
+Epoch: [22][60/75]	L_Src_Sup 2.6071e-01 (1.9967e-01)	L_Trg_Inj 4.5563e-01 (4.3069e-01)	Loss Disc 6.9295e-01 (6.9320e-01)	Loss Pred 3.0697e-01 (2.8832e-01)	Loss TOTAL 7.2508e-01 (7.1000e-01)
+Epoch: [22][70/75]	L_Src_Sup 6.9608e-04 (1.9273e-01)	L_Trg_Inj 4.7423e-01 (4.3140e-01)	Loss Disc 6.9291e-01 (6.9320e-01)	Loss Pred 3.1727e-01 (2.8574e-01)	Loss TOTAL 7.1122e-01 (7.0575e-01)
+Epoch: [22][75/75]	L_Src_Sup 1.1508e-02 (1.9002e-01)	L_Trg_Inj 4.6889e-01 (4.3073e-01)	Loss Disc 6.9299e-01 (6.9320e-01)	Loss Pred 3.2805e-01 (2.8621e-01)	Loss TOTAL 7.2259e-01 (7.0637e-01)
+VALIDATION RESULTS
+Epoch: [22][12/12]	L_Src_Sup 2.8735e-01 (1.9757e-01)	L_Trg_Inj 4.6726e-01 (4.6770e-01)	Loss Disc 6.9315e-01 (6.9318e-01)	Loss Pred 2.9488e-01 (2.8109e-01)	Loss TOTAL 7.1692e-01 (6.9421e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 0.9999 
+Best F1 score is : 0.9993 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 0.9999 
+Best F1 score is : 0.9993 
+Epoch: [23][10/75]	L_Src_Sup 1.2303e-01 (1.7524e-01)	L_Trg_Inj 3.6121e-01 (4.1025e-01)	Loss Disc 6.9312e-01 (6.9322e-01)	Loss Pred 3.1638e-01 (2.8538e-01)	Loss TOTAL 7.1136e-01 (6.9054e-01)
+Epoch: [23][20/75]	L_Src_Sup 1.1692e-01 (1.8964e-01)	L_Trg_Inj 4.4793e-01 (3.9866e-01)	Loss Disc 6.9312e-01 (6.9321e-01)	Loss Pred 3.2698e-01 (2.8786e-01)	Loss TOTAL 7.3003e-01 (7.0992e-01)
+Epoch: [23][30/75]	L_Src_Sup 3.6713e-01 (2.3621e-01)	L_Trg_Inj 5.9824e-01 (4.3149e-01)	Loss Disc 6.9330e-01 (6.9321e-01)	Loss Pred 2.5890e-01 (2.8653e-01)	Loss TOTAL 7.0209e-01 (7.2011e-01)
+Epoch: [23][40/75]	L_Src_Sup 1.9745e-01 (2.7298e-01)	L_Trg_Inj 6.1099e-01 (4.7117e-01)	Loss Disc 6.9323e-01 (6.9322e-01)	Loss Pred 2.8202e-01 (2.7947e-01)	Loss TOTAL 7.0948e-01 (7.1778e-01)
+Epoch: [23][50/75]	L_Src_Sup 2.8932e-01 (2.5136e-01)	L_Trg_Inj 4.7528e-01 (4.8828e-01)	Loss Disc 6.9318e-01 (6.9321e-01)	Loss Pred 2.9243e-01 (2.8280e-01)	Loss TOTAL 7.1548e-01 (7.1720e-01)
+Epoch: [23][60/75]	L_Src_Sup 1.0639e-01 (2.2888e-01)	L_Trg_Inj 3.2214e-01 (4.7193e-01)	Loss Disc 6.9290e-01 (6.9320e-01)	Loss Pred 3.4860e-01 (2.8244e-01)	Loss TOTAL 7.3791e-01 (7.1064e-01)
+Epoch: [23][70/75]	L_Src_Sup 2.1537e-01 (2.2713e-01)	L_Trg_Inj 5.4365e-01 (4.5405e-01)	Loss Disc 6.9319e-01 (6.9320e-01)	Loss Pred 2.6651e-01 (2.8050e-01)	Loss TOTAL 6.8901e-01 (7.0897e-01)
+Epoch: [23][75/75]	L_Src_Sup 3.0490e-01 (2.3036e-01)	L_Trg_Inj 4.8816e-01 (4.5894e-01)	Loss Disc 6.9316e-01 (6.9319e-01)	Loss Pred 2.7774e-01 (2.8126e-01)	Loss TOTAL 7.0363e-01 (7.0962e-01)
+VALIDATION RESULTS
+Epoch: [23][12/12]	L_Src_Sup 0.0000e+00 (2.0373e-01)	L_Trg_Inj 4.5232e-01 (4.6655e-01)	Loss Disc 6.9363e-01 (6.9321e-01)	Loss Pred 2.1365e-01 (2.7319e-01)	Loss TOTAL 6.0570e-01 (6.8682e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 0.9999 
+Best F1 score is : 0.9995 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 0.9999 
+Best F1 score is : 0.9995 
+Epoch: [24][10/75]	L_Src_Sup 1.9190e-01 (2.6086e-01)	L_Trg_Inj 4.5469e-01 (4.7634e-01)	Loss Disc 6.9333e-01 (6.9320e-01)	Loss Pred 2.4208e-01 (2.7736e-01)	Loss TOTAL 6.5340e-01 (6.9841e-01)
+Epoch: [24][20/75]	L_Src_Sup 3.1339e-03 (2.6659e-01)	L_Trg_Inj 4.2827e-01 (4.4027e-01)	Loss Disc 6.9310e-01 (6.9318e-01)	Loss Pred 2.7648e-01 (2.8063e-01)	Loss TOTAL 6.6617e-01 (7.1607e-01)
+Epoch: [24][30/75]	L_Src_Sup 1.0913e-01 (2.5214e-01)	L_Trg_Inj 3.8219e-01 (4.2039e-01)	Loss Disc 6.9327e-01 (6.9320e-01)	Loss Pred 3.3473e-01 (2.7682e-01)	Loss TOTAL 7.3050e-01 (7.1179e-01)
+Epoch: [24][40/75]	L_Src_Sup 2.9850e-01 (2.5521e-01)	L_Trg_Inj 3.5861e-01 (4.2125e-01)	Loss Disc 6.9314e-01 (6.9319e-01)	Loss Pred 3.5965e-01 (2.8484e-01)	Loss TOTAL 7.7194e-01 (7.1870e-01)
+Epoch: [24][50/75]	L_Src_Sup 1.7993e-01 (2.3581e-01)	L_Trg_Inj 3.3666e-01 (3.9775e-01)	Loss Disc 6.9305e-01 (6.9320e-01)	Loss Pred 3.8194e-01 (2.8031e-01)	Loss TOTAL 7.8013e-01 (7.0714e-01)
+Epoch: [24][60/75]	L_Src_Sup 4.7781e-01 (2.4336e-01)	L_Trg_Inj 5.4558e-01 (4.0827e-01)	Loss Disc 6.9303e-01 (6.9320e-01)	Loss Pred 3.3400e-01 (2.7814e-01)	Loss TOTAL 7.8285e-01 (7.0826e-01)
+Epoch: [24][70/75]	L_Src_Sup 2.4891e-01 (2.3006e-01)	L_Trg_Inj 3.7801e-01 (4.1762e-01)	Loss Disc 6.9326e-01 (6.9320e-01)	Loss Pred 3.0962e-01 (2.7512e-01)	Loss TOTAL 7.1894e-01 (7.0222e-01)
+Epoch: [24][75/75]	L_Src_Sup 5.2466e-01 (2.2895e-01)	L_Trg_Inj 3.1371e-01 (4.1286e-01)	Loss Disc 6.9310e-01 (6.9320e-01)	Loss Pred 2.9749e-01 (2.7468e-01)	Loss TOTAL 9.3883e-01 (7.0296e-01)
+VALIDATION RESULTS
+Epoch: [24][12/12]	L_Src_Sup 6.7651e-02 (2.3259e-01)	L_Trg_Inj 3.5080e-01 (3.6994e-01)	Loss Disc 6.9328e-01 (6.9320e-01)	Loss Pred 2.9184e-01 (2.6439e-01)	Loss TOTAL 6.8032e-01 (6.9914e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 0.9999 
+Best F1 score is : 0.9995 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 0.9999 
+Best F1 score is : 0.9995 
+Epoch: [25][10/75]	L_Src_Sup 4.6536e-01 (1.6139e-01)	L_Trg_Inj 4.2774e-01 (4.0437e-01)	Loss Disc 6.9321e-01 (6.9326e-01)	Loss Pred 2.1194e-01 (2.6694e-01)	Loss TOTAL 6.8547e-01 (6.7614e-01)
+Epoch: [25][20/75]	L_Src_Sup 0.0000e+00 (1.5373e-01)	L_Trg_Inj 3.6685e-01 (4.2785e-01)	Loss Disc 6.9343e-01 (6.9320e-01)	Loss Pred 2.6009e-01 (2.8669e-01)	Loss TOTAL 6.4349e-01 (6.9444e-01)
+Epoch: [25][30/75]	L_Src_Sup 4.4242e-01 (1.8047e-01)	L_Trg_Inj 4.3906e-01 (3.9875e-01)	Loss Disc 6.9350e-01 (6.9319e-01)	Loss Pred 2.2308e-01 (2.8792e-01)	Loss TOTAL 6.6134e-01 (7.1074e-01)
+Epoch: [25][40/75]	L_Src_Sup 3.6798e-01 (2.2443e-01)	L_Trg_Inj 4.4697e-01 (4.3751e-01)	Loss Disc 6.9328e-01 (6.9317e-01)	Loss Pred 2.4842e-01 (2.8162e-01)	Loss TOTAL 6.7655e-01 (7.3752e-01)
+Epoch: [25][50/75]	L_Src_Sup 3.5907e-01 (2.2751e-01)	L_Trg_Inj 5.3787e-01 (4.2348e-01)	Loss Disc 6.9294e-01 (6.9318e-01)	Loss Pred 3.2065e-01 (2.7800e-01)	Loss TOTAL 7.5682e-01 (7.3020e-01)
+Epoch: [25][60/75]	L_Src_Sup 2.7026e-01 (2.3049e-01)	L_Trg_Inj 4.8543e-01 (4.4708e-01)	Loss Disc 6.9344e-01 (6.9318e-01)	Loss Pred 1.9620e-01 (2.7621e-01)	Loss TOTAL 6.1849e-01 (7.2434e-01)
+Epoch: [25][70/75]	L_Src_Sup 3.5410e-01 (2.2431e-01)	L_Trg_Inj 2.9480e-01 (4.3750e-01)	Loss Disc 6.9314e-01 (6.9319e-01)	Loss Pred 2.4551e-01 (2.7342e-01)	Loss TOTAL 7.1627e-01 (7.1600e-01)
+Epoch: [25][75/75]	L_Src_Sup 4.5562e-01 (2.2724e-01)	L_Trg_Inj 5.0599e-01 (4.3716e-01)	Loss Disc 6.9316e-01 (6.9319e-01)	Loss Pred 2.6950e-01 (2.7218e-01)	Loss TOTAL 7.1224e-01 (7.1358e-01)
+VALIDATION RESULTS
+Epoch: [25][12/12]	L_Src_Sup 1.7717e-01 (2.4863e-01)	L_Trg_Inj 5.0374e-01 (5.0399e-01)	Loss Disc 6.9332e-01 (6.9322e-01)	Loss Pred 2.4462e-01 (2.6652e-01)	Loss TOTAL 6.5937e-01 (6.8839e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9996 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 0.9999 
+Best F1 score is : 0.9995 
+Epoch: [26][10/75]	L_Src_Sup 0.0000e+00 (2.0673e-01)	L_Trg_Inj 3.8302e-01 (4.5163e-01)	Loss Disc 6.9308e-01 (6.9316e-01)	Loss Pred 2.9415e-01 (2.7802e-01)	Loss TOTAL 6.7899e-01 (6.9044e-01)
+Epoch: [26][20/75]	L_Src_Sup 6.7733e-01 (3.2071e-01)	L_Trg_Inj 5.3343e-01 (4.5924e-01)	Loss Disc 6.9288e-01 (6.9316e-01)	Loss Pred 2.9389e-01 (2.6409e-01)	Loss TOTAL 9.0531e-01 (7.3541e-01)
+Epoch: [26][30/75]	L_Src_Sup 0.0000e+00 (2.6652e-01)	L_Trg_Inj 4.7914e-01 (4.9041e-01)	Loss Disc 6.9329e-01 (6.9320e-01)	Loss Pred 2.5562e-01 (2.6050e-01)	Loss TOTAL 6.5018e-01 (7.1396e-01)
+Epoch: [26][40/75]	L_Src_Sup 5.8183e-01 (2.3910e-01)	L_Trg_Inj 2.9332e-01 (4.6646e-01)	Loss Disc 6.9353e-01 (6.9320e-01)	Loss Pred 2.3038e-01 (2.6372e-01)	Loss TOTAL 9.5317e-01 (7.1146e-01)
+Epoch: [26][50/75]	L_Src_Sup 3.4853e-01 (2.5707e-01)	L_Trg_Inj 5.4317e-01 (4.6222e-01)	Loss Disc 6.9323e-01 (6.9320e-01)	Loss Pred 2.6750e-01 (2.6379e-01)	Loss TOTAL 7.0328e-01 (7.1406e-01)
+Epoch: [26][60/75]	L_Src_Sup 0.0000e+00 (2.4747e-01)	L_Trg_Inj 3.8653e-01 (4.6151e-01)	Loss Disc 6.9324e-01 (6.9320e-01)	Loss Pred 2.1697e-01 (2.6315e-01)	Loss TOTAL 6.0225e-01 (7.0711e-01)
+Epoch: [26][70/75]	L_Src_Sup 2.0279e-01 (2.4134e-01)	L_Trg_Inj 5.0820e-01 (4.5928e-01)	Loss Disc 6.9304e-01 (6.9320e-01)	Loss Pred 3.5647e-01 (2.6699e-01)	Loss TOTAL 7.7409e-01 (7.0826e-01)
+Epoch: [26][75/75]	L_Src_Sup 1.0537e-01 (2.4039e-01)	L_Trg_Inj 3.9833e-01 (4.5929e-01)	Loss Disc 6.9323e-01 (6.9320e-01)	Loss Pred 3.4356e-01 (2.6834e-01)	Loss TOTAL 7.4055e-01 (7.0787e-01)
+VALIDATION RESULTS
+Epoch: [26][12/12]	L_Src_Sup 9.1632e-02 (1.8483e-01)	L_Trg_Inj 4.1448e-01 (4.0799e-01)	Loss Disc 6.9320e-01 (6.9321e-01)	Loss Pred 2.3609e-01 (2.6046e-01)	Loss TOTAL 6.3330e-01 (6.6741e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9998 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 0.9999 
+Best F1 score is : 0.9995 
+Epoch: [27][10/75]	L_Src_Sup 1.2269e-01 (1.5840e-01)	L_Trg_Inj 3.3824e-01 (3.4061e-01)	Loss Disc 6.9301e-01 (6.9313e-01)	Loss Pred 3.0508e-01 (2.8596e-01)	Loss TOTAL 6.9768e-01 (6.8912e-01)
+Epoch: [27][20/75]	L_Src_Sup 0.0000e+00 (2.0365e-01)	L_Trg_Inj 3.8415e-01 (3.8166e-01)	Loss Disc 6.9332e-01 (6.9308e-01)	Loss Pred 2.7902e-01 (2.8716e-01)	Loss TOTAL 6.6410e-01 (6.9670e-01)
+Epoch: [27][30/75]	L_Src_Sup 1.5891e-01 (2.0387e-01)	L_Trg_Inj 3.5841e-01 (3.7059e-01)	Loss Disc 6.9335e-01 (6.9316e-01)	Loss Pred 2.5297e-01 (2.7327e-01)	Loss TOTAL 6.5138e-01 (6.8696e-01)
+Epoch: [27][40/75]	L_Src_Sup 3.8542e-01 (1.9370e-01)	L_Trg_Inj 3.1646e-01 (3.5287e-01)	Loss Disc 6.9273e-01 (6.9316e-01)	Loss Pred 2.9152e-01 (2.7109e-01)	Loss TOTAL 7.7704e-01 (6.8225e-01)
+Epoch: [27][50/75]	L_Src_Sup 1.7490e-01 (1.8949e-01)	L_Trg_Inj 4.5125e-01 (3.6863e-01)	Loss Disc 6.9333e-01 (6.9318e-01)	Loss Pred 2.3918e-01 (2.6812e-01)	Loss TOTAL 6.4845e-01 (6.7955e-01)
+Epoch: [27][60/75]	L_Src_Sup 2.4828e-02 (1.9241e-01)	L_Trg_Inj 5.3010e-01 (3.8518e-01)	Loss Disc 6.9322e-01 (6.9319e-01)	Loss Pred 2.3886e-01 (2.6651e-01)	Loss TOTAL 6.4096e-01 (6.7895e-01)
+Epoch: [27][70/75]	L_Src_Sup 1.1253e-01 (1.9700e-01)	L_Trg_Inj 4.9378e-01 (4.0230e-01)	Loss Disc 6.9316e-01 (6.9320e-01)	Loss Pred 3.3015e-01 (2.6533e-01)	Loss TOTAL 7.3736e-01 (6.7911e-01)
+Epoch: [27][75/75]	L_Src_Sup 0.0000e+00 (1.9795e-01)	L_Trg_Inj 4.4021e-01 (4.0607e-01)	Loss Disc 6.9315e-01 (6.9319e-01)	Loss Pred 2.6449e-01 (2.6530e-01)	Loss TOTAL 6.5509e-01 (6.7907e-01)
+VALIDATION RESULTS
+Epoch: [27][12/12]	L_Src_Sup 6.6153e-02 (1.6983e-01)	L_Trg_Inj 4.2345e-01 (4.1497e-01)	Loss Disc 6.9311e-01 (6.9320e-01)	Loss Pred 2.9061e-01 (2.5865e-01)	Loss TOTAL 6.8613e-01 (6.6373e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 1.0000 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9995 
+Epoch: [28][10/75]	L_Src_Sup 5.2528e-04 (2.2955e-01)	L_Trg_Inj 4.9395e-01 (4.4324e-01)	Loss Disc 6.9325e-01 (6.9324e-01)	Loss Pred 2.1165e-01 (2.5654e-01)	Loss TOTAL 6.0772e-01 (6.8028e-01)
+Epoch: [28][20/75]	L_Src_Sup 2.3370e-01 (2.2710e-01)	L_Trg_Inj 4.4707e-01 (4.4301e-01)	Loss Disc 6.9320e-01 (6.9322e-01)	Loss Pred 1.9923e-01 (2.6244e-01)	Loss TOTAL 6.1391e-01 (6.8649e-01)
+Epoch: [28][30/75]	L_Src_Sup 1.4847e-01 (2.1998e-01)	L_Trg_Inj 3.5494e-01 (4.3302e-01)	Loss Disc 6.9317e-01 (6.9322e-01)	Loss Pred 2.6402e-01 (2.6253e-01)	Loss TOTAL 6.6094e-01 (6.8139e-01)
+Epoch: [28][40/75]	L_Src_Sup 1.8644e-01 (2.1526e-01)	L_Trg_Inj 4.4130e-01 (4.2407e-01)	Loss Disc 6.9321e-01 (6.9321e-01)	Loss Pred 2.5038e-01 (2.6256e-01)	Loss TOTAL 6.5976e-01 (6.8062e-01)
+Epoch: [28][50/75]	L_Src_Sup 2.9160e-01 (2.1898e-01)	L_Trg_Inj 4.9327e-01 (4.3549e-01)	Loss Disc 6.9314e-01 (6.9321e-01)	Loss Pred 2.7693e-01 (2.6278e-01)	Loss TOTAL 7.0199e-01 (6.8274e-01)
+Epoch: [28][60/75]	L_Src_Sup 2.1427e-01 (2.0653e-01)	L_Trg_Inj 4.5952e-01 (4.3670e-01)	Loss Disc 6.9299e-01 (6.9320e-01)	Loss Pred 3.4326e-01 (2.6579e-01)	Loss TOTAL 7.5713e-01 (6.8736e-01)
+Epoch: [28][70/75]	L_Src_Sup 1.5110e-01 (2.1572e-01)	L_Trg_Inj 4.6004e-01 (4.4271e-01)	Loss Disc 6.9310e-01 (6.9319e-01)	Loss Pred 2.6314e-01 (2.6544e-01)	Loss TOTAL 6.7080e-01 (6.9194e-01)
+Epoch: [28][75/75]	L_Src_Sup 0.0000e+00 (2.1014e-01)	L_Trg_Inj 3.7820e-01 (4.4055e-01)	Loss Disc 6.9335e-01 (6.9320e-01)	Loss Pred 2.2309e-01 (2.6386e-01)	Loss TOTAL 6.0758e-01 (6.8865e-01)
+VALIDATION RESULTS
+Epoch: [28][12/12]	L_Src_Sup 0.0000e+00 (1.7010e-01)	L_Trg_Inj 3.7468e-01 (3.6607e-01)	Loss Disc 6.9308e-01 (6.9319e-01)	Loss Pred 2.5015e-01 (2.5658e-01)	Loss TOTAL 6.3416e-01 (6.5680e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9998 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 0.9999 
+Best F1 score is : 0.9995 
+Epoch: [29][10/75]	L_Src_Sup 1.3413e-02 (1.5851e-01)	L_Trg_Inj 4.6890e-01 (4.0066e-01)	Loss Disc 6.9316e-01 (6.9322e-01)	Loss Pred 2.7610e-01 (2.4156e-01)	Loss TOTAL 6.7092e-01 (6.7656e-01)
+Epoch: [29][20/75]	L_Src_Sup 0.0000e+00 (2.0076e-01)	L_Trg_Inj 4.4167e-01 (4.2620e-01)	Loss Disc 6.9328e-01 (6.9323e-01)	Loss Pred 2.2216e-01 (2.3865e-01)	Loss TOTAL 6.1296e-01 (6.6679e-01)
+Epoch: [29][30/75]	L_Src_Sup 9.1803e-02 (2.1554e-01)	L_Trg_Inj 4.1896e-01 (4.3519e-01)	Loss Disc 6.9311e-01 (6.9322e-01)	Loss Pred 3.8343e-01 (2.5286e-01)	Loss TOTAL 7.8106e-01 (6.8243e-01)
+Epoch: [29][40/75]	L_Src_Sup 1.7422e-01 (2.0821e-01)	L_Trg_Inj 4.0047e-01 (4.3170e-01)	Loss Disc 6.9333e-01 (6.9321e-01)	Loss Pred 2.3528e-01 (2.5560e-01)	Loss TOTAL 6.3941e-01 (6.8029e-01)
+Epoch: [29][50/75]	L_Src_Sup 1.2998e-01 (2.0396e-01)	L_Trg_Inj 4.1029e-01 (4.2807e-01)	Loss Disc 6.9299e-01 (6.9320e-01)	Loss Pred 2.8897e-01 (2.5909e-01)	Loss TOTAL 6.8950e-01 (6.8022e-01)
+Epoch: [29][60/75]	L_Src_Sup 1.1103e-01 (2.0781e-01)	L_Trg_Inj 4.7944e-01 (4.3073e-01)	Loss Disc 6.9305e-01 (6.9321e-01)	Loss Pred 3.2914e-01 (2.6046e-01)	Loss TOTAL 7.3472e-01 (6.8443e-01)
+Epoch: [29][70/75]	L_Src_Sup 0.0000e+00 (2.0033e-01)	L_Trg_Inj 4.5456e-01 (4.3750e-01)	Loss Disc 6.9308e-01 (6.9321e-01)	Loss Pred 2.6162e-01 (2.6026e-01)	Loss TOTAL 6.5362e-01 (6.8236e-01)
+Epoch: [29][75/75]	L_Src_Sup 3.5136e-01 (2.0606e-01)	L_Trg_Inj 4.6228e-01 (4.3972e-01)	Loss Disc 6.9321e-01 (6.9320e-01)	Loss Pred 3.1546e-01 (2.6250e-01)	Loss TOTAL 7.4343e-01 (6.8505e-01)
+VALIDATION RESULTS
+Epoch: [29][12/12]	L_Src_Sup 2.2602e-01 (2.5901e-01)	L_Trg_Inj 4.5516e-01 (4.6951e-01)	Loss Disc 6.9334e-01 (6.9321e-01)	Loss Pred 2.6146e-01 (2.5601e-01)	Loss TOTAL 6.7624e-01 (6.7547e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 1.0000 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9995 
+Epoch: [30][10/75]	L_Src_Sup 2.3193e-01 (1.4857e-01)	L_Trg_Inj 3.3616e-01 (4.0770e-01)	Loss Disc 6.9299e-01 (6.9316e-01)	Loss Pred 3.1544e-01 (2.7374e-01)	Loss TOTAL 7.1874e-01 (6.7595e-01)
+Epoch: [30][20/75]	L_Src_Sup 1.6222e-01 (1.6594e-01)	L_Trg_Inj 4.3495e-01 (4.1550e-01)	Loss Disc 6.9310e-01 (6.9320e-01)	Loss Pred 2.4787e-01 (2.6629e-01)	Loss TOTAL 6.5414e-01 (6.7966e-01)
+Epoch: [30][30/75]	L_Src_Sup 1.3918e-01 (1.6243e-01)	L_Trg_Inj 4.0997e-01 (4.1635e-01)	Loss Disc 6.9321e-01 (6.9319e-01)	Loss Pred 2.7474e-01 (2.6057e-01)	Loss TOTAL 6.7626e-01 (6.7099e-01)
+Epoch: [30][40/75]	L_Src_Sup 3.4409e-01 (1.7176e-01)	L_Trg_Inj 2.6336e-01 (3.9723e-01)	Loss Disc 6.9333e-01 (6.9321e-01)	Loss Pred 2.3417e-01 (2.5839e-01)	Loss TOTAL 7.2231e-01 (6.6837e-01)
+Epoch: [30][50/75]	L_Src_Sup 2.4132e-01 (1.7908e-01)	L_Trg_Inj 2.6303e-01 (3.8176e-01)	Loss Disc 6.9322e-01 (6.9321e-01)	Loss Pred 3.0176e-01 (2.6056e-01)	Loss TOTAL 6.9880e-01 (6.6843e-01)
+Epoch: [30][60/75]	L_Src_Sup 1.2394e-01 (1.8688e-01)	L_Trg_Inj 4.9849e-01 (3.8642e-01)	Loss Disc 6.9298e-01 (6.9320e-01)	Loss Pred 3.0161e-01 (2.5996e-01)	Loss TOTAL 7.1035e-01 (6.7145e-01)
+Epoch: [30][70/75]	L_Src_Sup 2.3448e-01 (1.8562e-01)	L_Trg_Inj 4.4878e-01 (3.9640e-01)	Loss Disc 6.9347e-01 (6.9321e-01)	Loss Pred 1.9282e-01 (2.5989e-01)	Loss TOTAL 6.0788e-01 (6.7413e-01)
+Epoch: [30][75/75]	L_Src_Sup 3.3196e-01 (1.8646e-01)	L_Trg_Inj 3.9646e-01 (3.9769e-01)	Loss Disc 6.9306e-01 (6.9321e-01)	Loss Pred 3.2857e-01 (2.6067e-01)	Loss TOTAL 7.4794e-01 (6.7450e-01)
+VALIDATION RESULTS
+Epoch: [30][12/12]	L_Src_Sup 1.8243e-01 (1.7898e-01)	L_Trg_Inj 3.8774e-01 (3.7559e-01)	Loss Disc 6.9316e-01 (6.9321e-01)	Loss Pred 2.2654e-01 (2.4994e-01)	Loss TOTAL 6.3014e-01 (6.5200e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 1.0000 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9995 
+Epoch: [31][10/75]	L_Src_Sup 0.0000e+00 (1.7192e-01)	L_Trg_Inj 3.5611e-01 (3.5011e-01)	Loss Disc 6.9336e-01 (6.9321e-01)	Loss Pred 2.3328e-01 (2.6060e-01)	Loss TOTAL 6.1558e-01 (6.9849e-01)
+Epoch: [31][20/75]	L_Src_Sup 0.0000e+00 (1.5801e-01)	L_Trg_Inj 3.5600e-01 (3.6788e-01)	Loss Disc 6.9330e-01 (6.9320e-01)	Loss Pred 2.0606e-01 (2.5786e-01)	Loss TOTAL 5.8831e-01 (6.7978e-01)
+Epoch: [31][30/75]	L_Src_Sup 4.7570e-01 (1.9955e-01)	L_Trg_Inj 3.4075e-01 (3.7228e-01)	Loss Disc 6.9337e-01 (6.9321e-01)	Loss Pred 2.4663e-01 (2.5912e-01)	Loss TOTAL 8.0992e-01 (6.8394e-01)
+Epoch: [31][40/75]	L_Src_Sup 1.0863e-01 (1.8708e-01)	L_Trg_Inj 3.3235e-01 (3.7298e-01)	Loss Disc 6.9293e-01 (6.9320e-01)	Loss Pred 3.2831e-01 (2.6110e-01)	Loss TOTAL 7.1887e-01 (6.7948e-01)
+Epoch: [31][50/75]	L_Src_Sup 1.6691e-01 (1.8844e-01)	L_Trg_Inj 3.8617e-01 (3.6156e-01)	Loss Disc 6.9315e-01 (6.9320e-01)	Loss Pred 2.4645e-01 (2.6365e-01)	Loss TOTAL 6.4833e-01 (6.8075e-01)
+Epoch: [31][60/75]	L_Src_Sup 2.9549e-01 (1.7019e-01)	L_Trg_Inj 2.8174e-01 (3.5984e-01)	Loss Disc 6.9333e-01 (6.9320e-01)	Loss Pred 2.6004e-01 (2.6281e-01)	Loss TOTAL 6.7818e-01 (6.7556e-01)
+Epoch: [31][70/75]	L_Src_Sup 2.9802e-01 (1.6849e-01)	L_Trg_Inj 3.9181e-01 (3.6525e-01)	Loss Disc 6.9335e-01 (6.9321e-01)	Loss Pred 1.6444e-01 (2.5909e-01)	Loss TOTAL 5.8010e-01 (6.7043e-01)
+Epoch: [31][75/75]	L_Src_Sup 1.1498e-01 (1.6940e-01)	L_Trg_Inj 3.3658e-01 (3.6452e-01)	Loss Disc 6.9310e-01 (6.9321e-01)	Loss Pred 3.1435e-01 (2.6077e-01)	Loss TOTAL 7.0606e-01 (6.7138e-01)
+VALIDATION RESULTS
+Epoch: [31][12/12]	L_Src_Sup 1.1843e-01 (1.6074e-01)	L_Trg_Inj 3.1324e-01 (3.1651e-01)	Loss Disc 6.9315e-01 (6.9319e-01)	Loss Pred 3.0745e-01 (2.5533e-01)	Loss TOTAL 6.9719e-01 (6.4966e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 1.0000 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9996 
+Epoch: [32][10/75]	L_Src_Sup 2.3260e-01 (1.7144e-01)	L_Trg_Inj 4.4029e-01 (3.6663e-01)	Loss Disc 6.9320e-01 (6.9322e-01)	Loss Pred 1.9140e-01 (2.3929e-01)	Loss TOTAL 6.0529e-01 (6.4147e-01)
+Epoch: [32][20/75]	L_Src_Sup 4.8960e-01 (2.3277e-01)	L_Trg_Inj 4.0614e-01 (3.8694e-01)	Loss Disc 6.9312e-01 (6.9321e-01)	Loss Pred 3.0058e-01 (2.5218e-01)	Loss TOTAL 8.2018e-01 (6.7677e-01)
+Epoch: [32][30/75]	L_Src_Sup 6.0006e-01 (2.5042e-01)	L_Trg_Inj 5.0795e-01 (4.0911e-01)	Loss Disc 6.9300e-01 (6.9319e-01)	Loss Pred 3.1431e-01 (2.6193e-01)	Loss TOTAL 8.6372e-01 (6.9994e-01)
+Epoch: [32][40/75]	L_Src_Sup 4.5316e-01 (2.5494e-01)	L_Trg_Inj 4.7892e-01 (4.4232e-01)	Loss Disc 6.9316e-01 (6.9321e-01)	Loss Pred 3.2779e-01 (2.5969e-01)	Loss TOTAL 7.6757e-01 (6.9512e-01)
+Epoch: [32][50/75]	L_Src_Sup 3.7610e-01 (2.4725e-01)	L_Trg_Inj 4.8131e-01 (4.4858e-01)	Loss Disc 6.9312e-01 (6.9321e-01)	Loss Pred 3.0024e-01 (2.6127e-01)	Loss TOTAL 7.3254e-01 (6.9339e-01)
+Epoch: [32][60/75]	L_Src_Sup 1.5077e-01 (2.5950e-01)	L_Trg_Inj 4.3784e-01 (4.5288e-01)	Loss Disc 6.9311e-01 (6.9320e-01)	Loss Pred 2.5930e-01 (2.6163e-01)	Loss TOTAL 6.6472e-01 (7.0601e-01)
+Epoch: [32][70/75]	L_Src_Sup 0.0000e+00 (2.4914e-01)	L_Trg_Inj 4.2306e-01 (4.4595e-01)	Loss Disc 6.9313e-01 (6.9321e-01)	Loss Pred 2.4625e-01 (2.5916e-01)	Loss TOTAL 6.3512e-01 (6.9845e-01)
+Epoch: [32][75/75]	L_Src_Sup 4.1543e-01 (2.5386e-01)	L_Trg_Inj 3.4445e-01 (4.4189e-01)	Loss Disc 6.9323e-01 (6.9320e-01)	Loss Pred 2.7279e-01 (2.5934e-01)	Loss TOTAL 7.6638e-01 (6.9810e-01)
+VALIDATION RESULTS
+Epoch: [32][12/12]	L_Src_Sup 2.0170e-01 (2.2884e-01)	L_Trg_Inj 3.9720e-01 (3.9944e-01)	Loss Disc 6.9313e-01 (6.9319e-01)	Loss Pred 2.7949e-01 (2.5228e-01)	Loss TOTAL 6.8594e-01 (6.6170e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 1.0000 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9996 
+Epoch: [33][10/75]	L_Src_Sup 3.8350e-04 (1.8830e-01)	L_Trg_Inj 4.1058e-01 (4.1074e-01)	Loss Disc 6.9341e-01 (6.9323e-01)	Loss Pred 2.5893e-01 (2.4947e-01)	Loss TOTAL 6.4673e-01 (6.6880e-01)
+Epoch: [33][20/75]	L_Src_Sup 1.5027e-01 (1.9585e-01)	L_Trg_Inj 4.1154e-01 (4.3505e-01)	Loss Disc 6.9317e-01 (6.9318e-01)	Loss Pred 2.5887e-01 (2.6377e-01)	Loss TOTAL 6.6163e-01 (6.8381e-01)
+Epoch: [33][30/75]	L_Src_Sup 2.1857e-01 (1.7023e-01)	L_Trg_Inj 2.6420e-01 (3.9898e-01)	Loss Disc 6.9265e-01 (6.9316e-01)	Loss Pred 3.2709e-01 (2.7170e-01)	Loss TOTAL 7.2169e-01 (6.8211e-01)
+Epoch: [33][40/75]	L_Src_Sup 4.4491e-01 (2.1100e-01)	L_Trg_Inj 4.6960e-01 (3.8012e-01)	Loss Disc 6.9342e-01 (6.9316e-01)	Loss Pred 2.0464e-01 (2.6925e-01)	Loss TOTAL 6.4279e-01 (6.9469e-01)
+Epoch: [33][50/75]	L_Src_Sup 0.0000e+00 (1.8900e-01)	L_Trg_Inj 3.2032e-01 (3.8240e-01)	Loss Disc 6.9308e-01 (6.9317e-01)	Loss Pred 2.7243e-01 (2.6363e-01)	Loss TOTAL 6.5100e-01 (6.8316e-01)
+Epoch: [33][60/75]	L_Src_Sup 1.0008e-01 (1.8274e-01)	L_Trg_Inj 3.8376e-01 (3.6672e-01)	Loss Disc 6.9310e-01 (6.9319e-01)	Loss Pred 3.5499e-01 (2.6080e-01)	Loss TOTAL 7.4992e-01 (6.8254e-01)
+Epoch: [33][70/75]	L_Src_Sup 0.0000e+00 (1.8138e-01)	L_Trg_Inj 3.8979e-01 (3.7132e-01)	Loss Disc 6.9313e-01 (6.9320e-01)	Loss Pred 2.9934e-01 (2.5929e-01)	Loss TOTAL 6.8488e-01 (6.8029e-01)
+Epoch: [33][75/75]	L_Src_Sup 3.7655e-01 (1.9092e-01)	L_Trg_Inj 3.6101e-01 (3.6988e-01)	Loss Disc 6.9337e-01 (6.9320e-01)	Loss Pred 2.1734e-01 (2.5869e-01)	Loss TOTAL 6.5331e-01 (6.8110e-01)
+VALIDATION RESULTS
+Epoch: [33][12/12]	L_Src_Sup 5.0873e-02 (2.4559e-01)	L_Trg_Inj 4.6620e-01 (4.5748e-01)	Loss Disc 6.9321e-01 (6.9321e-01)	Loss Pred 2.1724e-01 (2.5319e-01)	Loss TOTAL 6.1556e-01 (6.7242e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 1.0000 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9996 
+Epoch: [34][10/75]	L_Src_Sup 1.2353e-01 (1.7625e-01)	L_Trg_Inj 3.9164e-01 (4.4440e-01)	Loss Disc 6.9320e-01 (6.9319e-01)	Loss Pred 2.9908e-01 (2.8011e-01)	Loss TOTAL 6.9720e-01 (6.8876e-01)
+Epoch: [34][20/75]	L_Src_Sup 2.3008e-01 (1.9027e-01)	L_Trg_Inj 3.5981e-01 (4.0055e-01)	Loss Disc 6.9320e-01 (6.9319e-01)	Loss Pred 3.1246e-01 (2.7390e-01)	Loss TOTAL 7.1805e-01 (6.9662e-01)
+Epoch: [34][30/75]	L_Src_Sup 1.7149e-01 (1.8452e-01)	L_Trg_Inj 3.7853e-01 (3.8417e-01)	Loss Disc 6.9310e-01 (6.9315e-01)	Loss Pred 2.3086e-01 (2.7812e-01)	Loss TOTAL 6.3241e-01 (6.9412e-01)
+Epoch: [34][40/75]	L_Src_Sup 1.7399e-01 (1.8319e-01)	L_Trg_Inj 4.4777e-01 (3.8267e-01)	Loss Disc 6.9316e-01 (6.9319e-01)	Loss Pred 2.3140e-01 (2.6765e-01)	Loss TOTAL 6.4015e-01 (6.8611e-01)
+Epoch: [34][50/75]	L_Src_Sup 0.0000e+00 (1.8911e-01)	L_Trg_Inj 4.8647e-01 (4.0487e-01)	Loss Disc 6.9318e-01 (6.9320e-01)	Loss Pred 2.3063e-01 (2.6082e-01)	Loss TOTAL 6.2587e-01 (6.8820e-01)
+Epoch: [34][60/75]	L_Src_Sup 1.5249e-01 (1.9011e-01)	L_Trg_Inj 4.4484e-01 (4.0877e-01)	Loss Disc 6.9320e-01 (6.9320e-01)	Loss Pred 2.5783e-01 (2.6218e-01)	Loss TOTAL 6.6416e-01 (6.8912e-01)
+Epoch: [34][70/75]	L_Src_Sup 1.4976e-01 (1.8797e-01)	L_Trg_Inj 4.4611e-01 (4.0943e-01)	Loss Disc 6.9317e-01 (6.9320e-01)	Loss Pred 2.5753e-01 (2.6040e-01)	Loss TOTAL 6.6369e-01 (6.8578e-01)
+Epoch: [34][75/75]	L_Src_Sup 4.1697e-01 (1.8819e-01)	L_Trg_Inj 3.9854e-01 (4.0968e-01)	Loss Disc 6.9312e-01 (6.9320e-01)	Loss Pred 2.7110e-01 (2.5803e-01)	Loss TOTAL 7.1764e-01 (6.8243e-01)
+VALIDATION RESULTS
+Epoch: [34][12/12]	L_Src_Sup 2.1573e-01 (1.8837e-01)	L_Trg_Inj 4.1971e-01 (4.3565e-01)	Loss Disc 6.9324e-01 (6.9320e-01)	Loss Pred 2.6578e-01 (2.5255e-01)	Loss TOTAL 6.7594e-01 (6.6516e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9996 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9996 
+Epoch: [35][10/75]	L_Src_Sup 0.0000e+00 (2.0027e-01)	L_Trg_Inj 5.2860e-01 (4.8926e-01)	Loss Disc 6.9316e-01 (6.9322e-01)	Loss Pred 2.4385e-01 (2.5612e-01)	Loss TOTAL 6.4329e-01 (6.9794e-01)
+Epoch: [35][20/75]	L_Src_Sup 1.6489e-01 (1.9431e-01)	L_Trg_Inj 3.7905e-01 (4.6715e-01)	Loss Disc 6.9330e-01 (6.9320e-01)	Loss Pred 2.4374e-01 (2.6634e-01)	Loss TOTAL 6.4479e-01 (6.9221e-01)
+Epoch: [35][30/75]	L_Src_Sup 1.2337e-01 (2.3407e-01)	L_Trg_Inj 5.7614e-01 (4.9066e-01)	Loss Disc 6.9287e-01 (6.9318e-01)	Loss Pred 3.2500e-01 (2.7282e-01)	Loss TOTAL 7.4139e-01 (7.1838e-01)
+Epoch: [35][40/75]	L_Src_Sup 3.8814e-01 (2.1387e-01)	L_Trg_Inj 4.0214e-01 (4.8746e-01)	Loss Disc 6.9349e-01 (6.9319e-01)	Loss Pred 2.1654e-01 (2.6654e-01)	Loss TOTAL 6.4232e-01 (7.0314e-01)
+Epoch: [35][50/75]	L_Src_Sup 0.0000e+00 (2.4852e-01)	L_Trg_Inj 4.9745e-01 (4.7730e-01)	Loss Disc 6.9341e-01 (6.9320e-01)	Loss Pred 2.0262e-01 (2.5841e-01)	Loss TOTAL 5.9907e-01 (7.1283e-01)
+Epoch: [35][60/75]	L_Src_Sup 4.5877e-01 (2.5219e-01)	L_Trg_Inj 5.2884e-01 (4.8627e-01)	Loss Disc 6.9312e-01 (6.9320e-01)	Loss Pred 2.5690e-01 (2.5843e-01)	Loss TOTAL 7.0222e-01 (7.1018e-01)
+Epoch: [35][70/75]	L_Src_Sup 1.5073e-01 (2.5361e-01)	L_Trg_Inj 4.4576e-01 (4.8068e-01)	Loss Disc 6.9316e-01 (6.9320e-01)	Loss Pred 2.5677e-01 (2.5898e-01)	Loss TOTAL 6.6300e-01 (7.0774e-01)
+Epoch: [35][75/75]	L_Src_Sup 2.7990e-01 (2.4921e-01)	L_Trg_Inj 4.3449e-01 (4.7873e-01)	Loss Disc 6.9320e-01 (6.9320e-01)	Loss Pred 2.7032e-01 (2.5776e-01)	Loss TOTAL 6.8836e-01 (7.0397e-01)
+VALIDATION RESULTS
+Epoch: [35][12/12]	L_Src_Sup 1.9061e-01 (1.4869e-01)	L_Trg_Inj 4.3100e-01 (4.2808e-01)	Loss Disc 6.9321e-01 (6.9319e-01)	Loss Pred 2.1701e-01 (2.5238e-01)	Loss TOTAL 6.2577e-01 (6.5665e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 1.0000 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9996 
+Epoch: [36][10/75]	L_Src_Sup 0.0000e+00 (2.0127e-01)	L_Trg_Inj 4.0206e-01 (4.3578e-01)	Loss Disc 6.9335e-01 (6.9323e-01)	Loss Pred 2.1584e-01 (2.4048e-01)	Loss TOTAL 6.0272e-01 (6.5190e-01)
+Epoch: [36][20/75]	L_Src_Sup 2.0176e-01 (1.9069e-01)	L_Trg_Inj 4.7923e-01 (4.1680e-01)	Loss Disc 6.9319e-01 (6.9320e-01)	Loss Pred 2.2936e-01 (2.5744e-01)	Loss TOTAL 6.4406e-01 (6.6821e-01)
+Epoch: [36][30/75]	L_Src_Sup 1.5936e-01 (1.8748e-01)	L_Trg_Inj 5.2790e-01 (4.2936e-01)	Loss Disc 6.9303e-01 (6.9321e-01)	Loss Pred 3.3788e-01 (2.5802e-01)	Loss TOTAL 7.5312e-01 (6.8019e-01)
+Epoch: [36][40/75]	L_Src_Sup 1.7680e-01 (1.8882e-01)	L_Trg_Inj 4.5422e-01 (4.4491e-01)	Loss Disc 6.9314e-01 (6.9321e-01)	Loss Pred 2.2928e-01 (2.5830e-01)	Loss TOTAL 6.3895e-01 (6.7869e-01)
+Epoch: [36][50/75]	L_Src_Sup 2.3259e-01 (1.7864e-01)	L_Trg_Inj 4.4081e-01 (4.3231e-01)	Loss Disc 6.9325e-01 (6.9321e-01)	Loss Pred 1.8862e-01 (2.5578e-01)	Loss TOTAL 6.0258e-01 (6.7609e-01)
+Epoch: [36][60/75]	L_Src_Sup 0.0000e+00 (1.7915e-01)	L_Trg_Inj 3.6582e-01 (4.2023e-01)	Loss Disc 6.9303e-01 (6.9319e-01)	Loss Pred 2.9688e-01 (2.5836e-01)	Loss TOTAL 6.7998e-01 (6.7691e-01)
+Epoch: [36][70/75]	L_Src_Sup 2.4247e-01 (1.7191e-01)	L_Trg_Inj 2.8206e-01 (4.0786e-01)	Loss Disc 6.9312e-01 (6.9320e-01)	Loss Pred 2.9684e-01 (2.5747e-01)	Loss TOTAL 6.9585e-01 (6.7236e-01)
+Epoch: [36][75/75]	L_Src_Sup 1.7090e-01 (1.7429e-01)	L_Trg_Inj 3.2556e-01 (4.0038e-01)	Loss Disc 6.9323e-01 (6.9321e-01)	Loss Pred 2.2907e-01 (2.5541e-01)	Loss TOTAL 6.2533e-01 (6.7362e-01)
+VALIDATION RESULTS
+Epoch: [36][12/12]	L_Src_Sup 3.0337e-01 (1.9496e-01)	L_Trg_Inj 3.1158e-01 (3.2181e-01)	Loss Disc 6.9326e-01 (6.9320e-01)	Loss Pred 2.4931e-01 (2.5398e-01)	Loss TOTAL 6.5743e-01 (6.5675e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 1.0000 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9996 
+Epoch: [37][10/75]	L_Src_Sup 3.0646e-01 (2.8412e-01)	L_Trg_Inj 4.4086e-01 (3.8845e-01)	Loss Disc 6.9327e-01 (6.9321e-01)	Loss Pred 2.5633e-01 (2.5355e-01)	Loss TOTAL 6.7770e-01 (7.0364e-01)
+Epoch: [37][20/75]	L_Src_Sup 3.5365e-01 (2.5901e-01)	L_Trg_Inj 4.3868e-01 (4.3778e-01)	Loss Disc 6.9337e-01 (6.9320e-01)	Loss Pred 2.2892e-01 (2.6436e-01)	Loss TOTAL 6.5483e-01 (7.0309e-01)
+Epoch: [37][30/75]	L_Src_Sup 0.0000e+00 (2.3635e-01)	L_Trg_Inj 3.6180e-01 (4.2137e-01)	Loss Disc 6.9331e-01 (6.9319e-01)	Loss Pred 2.6948e-01 (2.6022e-01)	Loss TOTAL 6.5231e-01 (6.9812e-01)
+Epoch: [37][40/75]	L_Src_Sup 6.4129e-01 (2.3645e-01)	L_Trg_Inj 4.3063e-01 (4.1849e-01)	Loss Disc 6.9312e-01 (6.9320e-01)	Loss Pred 2.4220e-01 (2.5473e-01)	Loss TOTAL 9.0662e-01 (6.9339e-01)
+Epoch: [37][50/75]	L_Src_Sup 1.7832e-01 (2.3203e-01)	L_Trg_Inj 4.5102e-01 (4.3087e-01)	Loss Disc 6.9319e-01 (6.9320e-01)	Loss Pred 2.2866e-01 (2.5603e-01)	Loss TOTAL 6.3818e-01 (6.9274e-01)
+Epoch: [37][60/75]	L_Src_Sup 1.5034e-01 (2.2491e-01)	L_Trg_Inj 5.1104e-01 (4.3819e-01)	Loss Disc 6.9318e-01 (6.9319e-01)	Loss Pred 2.8330e-01 (2.5552e-01)	Loss TOTAL 6.9603e-01 (6.8974e-01)
+Epoch: [37][70/75]	L_Src_Sup 2.3414e-01 (2.1809e-01)	L_Trg_Inj 3.9873e-01 (4.4120e-01)	Loss Disc 6.9335e-01 (6.9320e-01)	Loss Pred 1.8797e-01 (2.5514e-01)	Loss TOTAL 5.9793e-01 (6.8594e-01)
+Epoch: [37][75/75]	L_Src_Sup 0.0000e+00 (2.0729e-01)	L_Trg_Inj 3.4210e-01 (4.3615e-01)	Loss Disc 6.9307e-01 (6.9320e-01)	Loss Pred 2.8265e-01 (2.5535e-01)	Loss TOTAL 6.6339e-01 (6.8334e-01)
+VALIDATION RESULTS
+Epoch: [37][12/12]	L_Src_Sup 2.6145e-01 (2.0689e-01)	L_Trg_Inj 3.2711e-01 (3.1621e-01)	Loss Disc 6.9319e-01 (6.9320e-01)	Loss Pred 2.2851e-01 (2.4721e-01)	Loss TOTAL 6.3396e-01 (6.5697e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 1.0000 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9996 
+Epoch: [38][10/75]	L_Src_Sup 3.2912e-01 (2.3587e-01)	L_Trg_Inj 4.1244e-01 (3.7751e-01)	Loss Disc 6.9313e-01 (6.9321e-01)	Loss Pred 3.2306e-01 (2.4737e-01)	Loss TOTAL 7.4378e-01 (6.6478e-01)
+Epoch: [38][20/75]	L_Src_Sup 1.5711e-01 (2.3759e-01)	L_Trg_Inj 4.8268e-01 (4.0488e-01)	Loss Disc 6.9326e-01 (6.9318e-01)	Loss Pred 3.0914e-01 (2.6349e-01)	Loss TOTAL 7.1975e-01 (6.8437e-01)
+Epoch: [38][30/75]	L_Src_Sup 3.7106e-01 (2.1160e-01)	L_Trg_Inj 3.7537e-01 (4.1963e-01)	Loss Disc 6.9331e-01 (6.9318e-01)	Loss Pred 2.9560e-01 (2.6207e-01)	Loss TOTAL 7.1690e-01 (6.7848e-01)
+Epoch: [38][40/75]	L_Src_Sup 2.7044e-01 (2.3252e-01)	L_Trg_Inj 5.2435e-01 (4.2316e-01)	Loss Disc 6.9334e-01 (6.9320e-01)	Loss Pred 1.7437e-01 (2.5698e-01)	Loss TOTAL 6.0052e-01 (6.8557e-01)
+Epoch: [38][50/75]	L_Src_Sup 0.0000e+00 (2.1085e-01)	L_Trg_Inj 4.2681e-01 (4.2905e-01)	Loss Disc 6.9314e-01 (6.9320e-01)	Loss Pred 2.1463e-01 (2.5178e-01)	Loss TOTAL 6.0388e-01 (6.7551e-01)
+Epoch: [38][60/75]	L_Src_Sup 1.2422e-01 (2.0120e-01)	L_Trg_Inj 3.8501e-01 (4.2216e-01)	Loss Disc 6.9315e-01 (6.9321e-01)	Loss Pred 2.9558e-01 (2.5279e-01)	Loss TOTAL 6.9308e-01 (6.7411e-01)
+Epoch: [38][70/75]	L_Src_Sup 1.4119e-01 (2.1268e-01)	L_Trg_Inj 4.8675e-01 (4.2767e-01)	Loss Disc 6.9302e-01 (6.9320e-01)	Loss Pred 2.6830e-01 (2.5542e-01)	Loss TOTAL 6.7760e-01 (6.7914e-01)
+Epoch: [38][75/75]	L_Src_Sup 3.2425e-01 (2.1204e-01)	L_Trg_Inj 4.1713e-01 (4.2772e-01)	Loss Disc 6.9313e-01 (6.9320e-01)	Loss Pred 2.4142e-01 (2.5556e-01)	Loss TOTAL 6.6213e-01 (6.7835e-01)
+VALIDATION RESULTS
+Epoch: [38][12/12]	L_Src_Sup 2.7463e-01 (2.1371e-01)	L_Trg_Inj 3.9999e-01 (3.9598e-01)	Loss Disc 6.9324e-01 (6.9322e-01)	Loss Pred 2.2118e-01 (2.4487e-01)	Loss TOTAL 6.3526e-01 (6.6102e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 1.0000 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 1.0000 
+Epoch: [39][10/75]	L_Src_Sup 4.1766e-01 (2.2684e-01)	L_Trg_Inj 3.8238e-01 (3.5361e-01)	Loss Disc 6.9282e-01 (6.9314e-01)	Loss Pred 3.3547e-01 (2.7784e-01)	Loss TOTAL 7.9716e-01 (6.9107e-01)
+Epoch: [39][20/75]	L_Src_Sup 1.9981e-01 (3.0352e-01)	L_Trg_Inj 6.0733e-01 (4.4610e-01)	Loss Disc 6.9331e-01 (6.9310e-01)	Loss Pred 2.1536e-01 (2.7068e-01)	Loss TOTAL 6.4273e-01 (7.2266e-01)
+Epoch: [39][30/75]	L_Src_Sup 1.5487e-01 (3.0928e-01)	L_Trg_Inj 5.4419e-01 (4.8363e-01)	Loss Disc 6.9312e-01 (6.9318e-01)	Loss Pred 2.5478e-01 (2.6470e-01)	Loss TOTAL 6.7124e-01 (7.1490e-01)
+Epoch: [39][40/75]	L_Src_Sup 0.0000e+00 (2.5698e-01)	L_Trg_Inj 4.1492e-01 (4.8199e-01)	Loss Disc 6.9322e-01 (6.9319e-01)	Loss Pred 2.2820e-01 (2.5554e-01)	Loss TOTAL 6.1630e-01 (6.9427e-01)
+Epoch: [39][50/75]	L_Src_Sup 1.6464e-01 (2.6984e-01)	L_Trg_Inj 5.0453e-01 (4.8780e-01)	Loss Disc 6.9315e-01 (6.9319e-01)	Loss Pred 2.4107e-01 (2.5346e-01)	Loss TOTAL 6.5456e-01 (6.9416e-01)
+Epoch: [39][60/75]	L_Src_Sup 1.5791e-01 (2.9003e-01)	L_Trg_Inj 5.0546e-01 (4.8492e-01)	Loss Disc 6.9330e-01 (6.9320e-01)	Loss Pred 2.9477e-01 (2.5364e-01)	Loss TOTAL 7.0776e-01 (6.9833e-01)
+Epoch: [39][70/75]	L_Src_Sup 3.9040e-01 (2.8231e-01)	L_Trg_Inj 5.1523e-01 (4.8788e-01)	Loss Disc 6.9305e-01 (6.9320e-01)	Loss Pred 3.6197e-01 (2.5472e-01)	Loss TOTAL 7.9906e-01 (6.9742e-01)
+Epoch: [39][75/75]	L_Src_Sup 0.0000e+00 (2.7325e-01)	L_Trg_Inj 4.8976e-01 (4.8864e-01)	Loss Disc 6.9313e-01 (6.9320e-01)	Loss Pred 2.2855e-01 (2.5524e-01)	Loss TOTAL 6.2409e-01 (6.9584e-01)
+VALIDATION RESULTS
+Epoch: [39][12/12]	L_Src_Sup 2.4050e-01 (1.8535e-01)	L_Trg_Inj 4.4434e-01 (4.6588e-01)	Loss Disc 6.9338e-01 (6.9321e-01)	Loss Pred 2.4793e-01 (2.5057e-01)	Loss TOTAL 6.6311e-01 (6.6301e-01)
+VALIDATION SOURCE PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 1.0000 
+VALIDATION TARGET PREDICTIONS
+AUPRC score is : 1.0000 
+Best F1 score is : 0.9996 
