@@ -36,6 +36,7 @@ def main(args):
     # Some functions and variables for logging
     dataset_type = get_dataset_type(args)
 
+    # --- 驗證相關函式，可以保留或刪除 (因為不會再被呼叫) ---
     def log_scores(args, dataset_type, metrics_pred):
         if dataset_type == "smd":
             log("AUPRC score is : %.4f " % (metrics_pred["avg_prc"]))
@@ -53,10 +54,14 @@ def main(args):
             log("Accuracy score is : %.4f " % (metrics_pred["acc"]))
             log("Macro F1 score is : %.4f " % (metrics_pred["mac_f1"]))
             log("Weighted F1 score is : %.4f " % (metrics_pred["w_f1"]))
+    # --- END ---
 
     batch_size = args.batch_size
-    eval_batch_size = args.eval_batch_size
-    num_val_iteration = args.num_val_iteration
+    # --- REMOVE START ---
+    # eval_batch_size = args.eval_batch_size
+    # num_val_iteration = args.num_val_iteration
+    # --- REMOVE END ---
+
 
 # 1. 建立 Source Train Dataset (唯一不傳 d_mean/d_std 的)
     #    它將根據 "source_data_train.csv" (假設檔名) 計算自己的 mean/std
@@ -68,32 +73,41 @@ def main(args):
     d_mean, d_std = dataset_src.get_statistic()
     log(f"Using Mean/Std calculated from Source Train (mean[0]={d_mean[0]}, std[0]={d_std[0]})")
 
+    # --- REMOVE START ---
     # 3. 建立 Source Val, 並【傳入】 mean/std
-    log("Loading Source Val...")
-    dataset_val_src = get_dataset(args, domain_type="source", split_type="val", 
-                                  d_mean=d_mean, d_std=d_std)
+    # log("Loading Source Val...")
+    # dataset_val_src = get_dataset(args, domain_type="source", split_type="val", 
+    #                               d_mean=d_mean, d_std=d_std)
+    # --- REMOVE END ---
 
     # 4. 建立 Target Train, 並【傳入】 mean/std
     log("Loading Target Train...")
     dataset_trg = get_dataset(args, domain_type="target", split_type="train", 
                               d_mean=d_mean, d_std=d_std)
     
+    # --- REMOVE START ---
     # 5. 建立 Target Val, 並【傳入】 mean/std
-    log("Loading Target Val...")
-    dataset_val_trg = get_dataset(args, domain_type="target", split_type="val", 
-                                    d_mean=d_mean, d_std=d_std)
+    # log("Loading Target Val...")
+    # dataset_val_trg = get_dataset(args, domain_type="target", split_type="val", 
+    #                                 d_mean=d_mean, d_std=d_std)
+    # --- REMOVE END ---
+
 
     # 6. 建立 DataLoaders (這部分不變)
     dataloader_src = DataLoader(dataset_src, batch_size=batch_size,
                                 shuffle=True, num_workers=0, drop_last=True)
-    dataloader_val_src = DataLoader(dataset_val_src, batch_size=eval_batch_size,
-                                    shuffle=True, num_workers=0, drop_last=True)
-    dataloader_val_trg = DataLoader(dataset_val_trg, batch_size=eval_batch_size,
-                                    shuffle=True, num_workers=0, drop_last=True)
+    
+    # --- REMOVE START ---
+    # dataloader_val_src = DataLoader(dataset_val_src, batch_size=eval_batch_size,
+    #                                 shuffle=True, num_workers=0, drop_last=True)
+    # dataloader_val_trg = DataLoader(dataset_val_trg, batch_size=eval_batch_size,
+    #                                 shuffle=True, num_workers=0, drop_last=True)
 
-    max_num_val_iteration = min(len(dataloader_val_src), len(dataloader_val_trg))
-    if max_num_val_iteration < num_val_iteration:
-        num_val_iteration = max_num_val_iteration
+    # max_num_val_iteration = min(len(dataloader_val_src), len(dataloader_val_trg))
+    # if max_num_val_iteration < num_val_iteration:
+    #     num_val_iteration = max_num_val_iteration
+    # --- REMOVE END ---
+
 
     # 7. 保持不變 (lines 85-86)
     input_channels_dim = dataset_src[0]['sequence'].shape[1]
@@ -107,7 +121,7 @@ def main(args):
 
     # Initialize progress metrics before training
     count_step = 0
-    best_val_score = -100
+    # best_val_score = -100 # <-- REMOVE (不再需要)
 
     # 9. 【關鍵】修改這裡，使用上面定義的 d_mean/d_std (lines 94-95)
     src_mean, src_std = d_mean, d_std 
@@ -166,72 +180,17 @@ def main(args):
                 count_step += 1
                 if count_step % len(dataloader_src) == 0:
                     
-                    # <-- 修改：只記錄最終進度，不安裝 ProgressMeter -->
+                    # <-- 修改：只記錄最終進度 -->
                     log(progress.display(i_batch + 1, is_logged=True))
 
-                    # Refresh the saved metrics for algorithm
+                    # Refresh the saved metrics for algorithm (for next epoch's progress meter)
                     algorithm.init_metrics()
 
-                    # Refresh the validation meters of algorithm
-                    algorithm.init_pred_meters_val()
-
-                    # turn algorithm into eval mode
-                    algorithm.eval()
-
-                    dataloader_val_src = DataLoader(dataset_val_src, batch_size=eval_batch_size,
-                                                    shuffle=True, num_workers=0, drop_last=True)
-                    dataloader_val_src_iterator = iter(dataloader_val_src)
-
-                    dataloader_val_trg = DataLoader(dataset_val_trg, batch_size=eval_batch_size,
-                                                    shuffle=True, num_workers=0, drop_last=True)
-                    dataloader_val_trg_iterator = iter(dataloader_val_trg)
-
-                    for i_batch_val in range(num_val_iteration):
-                        sample_batched_val_src = next(dataloader_val_src_iterator)
-                        sample_batched_val_trg = next(dataloader_val_trg_iterator)
-
-                        # Validation step of algorithm
-                        algorithm.step(sample_batched_val_src, sample_batched_val_trg, count_step=count_step,
-                                       src_mean=src_mean, src_std=src_std, trg_mean=trg_mean, trg_std=trg_std)
-
-                    progress_val = ProgressMeter(
-                        num_val_iteration,
-                        algorithm.return_metrics(),
-                        prefix="Epoch: [{}]".format(i))
-
-                    metrics_pred_val_src = algorithm.pred_meter_val_src.get_metrics()
-                    metrics_pred_val_trg = algorithm.pred_meter_val_trg.get_metrics()
-
-                    log("VALIDATION RESULTS")
-                    log(progress_val.display(i_batch_val + 1, is_logged=True))
-
-                    log("VALIDATION SOURCE PREDICTIONS")
-                    log_scores(args, dataset_type, metrics_pred_val_src)
-
-                    if dataset_type == "msl":
-                        cur_val_score = metrics_pred_val_src["best_f1"]
-                    elif dataset_type == "boiler":
-                        cur_val_score = metrics_pred_val_src["best_f1"]
-                    elif dataset_type == "smd":
-                        cur_val_score = metrics_pred_val_trg["best_f1"]
-                    elif dataset_type == "hvac": # <-- 新增 HVAC
-                        cur_val_score = metrics_pred_val_trg["best_f1"] # 以 Target F1 為標準
-                    else:
-                        cur_val_score = metrics_pred_val_src["mac_f1"]
-
-                    if cur_val_score > best_val_score:
-                        algorithm.save_state(experiment_folder_path)
-
-                        best_val_score = cur_val_score
-                    # algorithm.save_state(experiment_folder_path)
-                    log("VALIDATION TARGET PREDICTIONS")
-                    log_scores(args, dataset_type, metrics_pred_val_trg)
-
-                    # turn algorithm into training mode
-                    algorithm.train()
-
-                    # Refresh the saved metrics for algorithm
-                    algorithm.init_metrics()
+                    # --- 驗證邏輯已移除 ---
+                    # --- START: 新增的模型儲存邏輯 ---
+                    log(f"Epoch {i} complete. Saving model state...")
+                    algorithm.save_state(experiment_folder_path)
+                    # --- END: 新增的模型儲存邏輯 ---
 
                 else:
                     continue

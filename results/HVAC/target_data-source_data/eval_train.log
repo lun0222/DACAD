@@ -1,6 +1,6 @@
 Using device: cuda
 Loading source train dataset to get normalization stats...
-Using Mean/Std from Source Train (mean[0]=21.218266527850076, std[0]=0.1088880133303384)
+Using Mean/Std from Source Train (mean[0]=21.199086491739557, std[0]=0.12136612417904452)
 Loading Source Test...
 Loading Target Test...
 Starting to collect embeddings for t-SNE plot...
@@ -8,17 +8,17 @@ Target results saved to results\HVAC\target_data-source_data\predictions_test_ta
 TARGET RESULTS
 loaded from d:\DACAD\datasets\HVAC
 
-AUPRC score is : 0.5736 
-Best F1 score is : 0.8584 
-Best Prec score is : 0.7519 
+AUPRC score is : 0.8922 
+Best F1 score is : 0.9238 
+Best Prec score is : 0.8584 
 Best Rec score is : 1.0000 
 Source results saved to results\HVAC\target_data-source_data\predictions_test_source.csv
 SOURCE RESULTS
 loaded from d:\DACAD\datasets\HVAC
 
-AUPRC score is : 0.5736 
-Best F1 score is : 0.8584 
-Best Prec score is : 0.7519 
+AUPRC score is : 0.8922 
+Best F1 score is : 0.9238 
+Best Prec score is : 0.8584 
 Best Rec score is : 1.0000 
 Generating t-SNE plot...
 Loaded backend tkagg version 8.6.
