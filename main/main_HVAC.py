@@ -35,13 +35,7 @@ if __name__ == '__main__':
     
     # *** 請將 'Your_Feature_Name_1' 替換為您 CSV 中的實際欄位名稱 ***
     target_features = [
-        'hp_comp_1', 
-        'lp_comp_1', 
-        'comp_current_1', 
-        'cond_current_1', 
-        'return_air_temp', 
-        'superheat_1', 
-        'lp_plate_temp_1'
+        'fan_current_1','lp_comp_1','comp_current_1','return_air_temp','outdoor_temp'
     ]
     
     # 4. 循環遍歷所有 來源(src) -> 目標(trg) 組合
@@ -59,7 +53,7 @@ if __name__ == '__main__':
                     '--path_trg', dataset_path,
                     '--id_src', src,
                     '--id_trg', trg,
-                    '--num_epochs', '40',
+                    '--num_epochs', '50',
                     '--batch_size', '128',
                     '--eval_batch_size', '256',
                     '--learning_rate', '1e-4',

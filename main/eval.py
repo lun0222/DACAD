@@ -251,7 +251,7 @@ def main(args):
             'domain': final_domains
         })
         # 建立一個組合標籤，就像論文中那樣
-        df_tsne['label_str'] = np.where(final_labels == 1, 'Normal (1)', 'Abnormal (0)')
+        df_tsne['label_str'] = np.where(final_labels == 1,'Abnormal (1)', 'Normal (0)')
         df_tsne['plot_category'] = df_tsne['domain'] + ' - ' + df_tsne['label_str']
 
         # 4. 使用 Seaborn 繪圖
