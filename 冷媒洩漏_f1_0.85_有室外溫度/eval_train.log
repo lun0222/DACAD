@@ -1,25 +1,25 @@
 Using device: cuda
 Loading source train dataset to get normalization stats...
-Using Mean/Std from Source Train (mean[0]=6.442593226780509, std[0]=1.2340775789629297)
+Using Mean/Std from Source Train (mean[0]=5.506285903228045, std[0]=0.20951616163223202)
 Loading Source Test...
 Loading Target Test...
 Starting to collect embeddings for t-SNE plot...
-Target results saved to results\HVAC\target_data-source_data\predictions_test_target.csv
+Target results saved to results\HVAC\source_data-target_data\predictions_test_target.csv
 TARGET RESULTS
 loaded from d:\DACAD\datasets\HVAC
 
-AUPRC score is : 0.7930 
-Best F1 score is : 0.9618 
-Best Prec score is : 0.9264 
-Best Rec score is : 1.0000 
-Source results saved to results\HVAC\target_data-source_data\predictions_test_source.csv
+AUPRC score is : 0.5411 
+Best F1 score is : 0.8578 
+Best Prec score is : 0.7518 
+Best Rec score is : 0.9986 
+Source results saved to results\HVAC\source_data-target_data\predictions_test_source.csv
 SOURCE RESULTS
 loaded from d:\DACAD\datasets\HVAC
 
-AUPRC score is : 0.7930 
-Best F1 score is : 0.9618 
-Best Prec score is : 0.9264 
-Best Rec score is : 1.0000 
+AUPRC score is : 0.5411 
+Best F1 score is : 0.8578 
+Best Prec score is : 0.7518 
+Best Rec score is : 0.9986 
 Generating t-SNE plot...
 Loaded backend tkagg version 8.6.
 STREAM b'IHDR' 16 13
@@ -903,4 +903,4 @@ findfont: score(FontEntry(fname='C:\\Windows\\Fonts\\seguihis.ttf', name='Segoe 
 findfont: score(FontEntry(fname='C:\\Windows\\Fonts\\SegoeIcons.ttf', name='Segoe Fluent Icons', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
 findfont: score(FontEntry(fname='C:\\Windows\\Fonts\\GLSNECB.TTF', name='Gill Sans MT Ext Condensed Bold', style='normal', variant='normal', weight=400, stretch='condensed', size='scalable')) = 10.25
 findfont: Matching sans\-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=12.0 to DejaVu Sans ('C:\\Users\\USER\\anaconda3\\envs\\dacad\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
-t-SNE plot saved to results\HVAC\target_data-source_data\tsne_embeddings_plot.png
+t-SNE plot saved to results\HVAC\source_data-target_data\tsne_embeddings_plot.png

@@ -34,16 +34,16 @@
   "path_trg": "d:\\DACAD\\datasets\\HVAC",
   "age_src": -1,
   "age_trg": -1,
-  "id_src": "target_data",
-  "id_trg": "source_data",
+  "id_src": "source_data",
+  "id_trg": "target_data",
   "task": "decompensation",
   "log": "train.log",
   "seed": 1234,
   "features": [
-    "fan_current_1",
     "lp_comp_1",
+    "superheat_1",
     "comp_current_1",
-    "return_air_temp",
-    "outdoor_temp"
+    "outdoor_temp",
+    "return_air_temp"
   ]
 }

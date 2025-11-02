@@ -118,7 +118,7 @@ def plot_loss_curves(df, plot_name, output_dir):
 def main():
     # 1. 設定儲存圖表的資料夾
     #    (假設此腳本 plot_loss.py 儲存在 'main' 資料夾中)
-    output_dir = 'D:/DACAD/results/HVAC' 
+    output_dir = 'D:/DACAD/results/HVAC/source_data-target_data' 
     
     # 2. 設定您要處理的日誌檔案
     #    'log_path': 日誌檔案的實際路徑
@@ -128,10 +128,6 @@ def main():
             "log_path": "D:/DACAD/results/HVAC/source_data-target_data/train.log", #
             "plot_name": "source_data-target_data_Epoch_Losses"
         },
-        {
-            "log_path": "D:/DACAD/results/HVAC/target_data-source_data/train.log", #
-            "plot_name": "target_data-source_data_Epoch_Losses"
-        }
     ]
 
     # 確保輸出資料夾存在
