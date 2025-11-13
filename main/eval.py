@@ -251,7 +251,7 @@ def main(args):
             'domain': final_domains
         })
         # 建立一個組合標籤，就像論文中那樣
-        df_tsne['label_str'] = np.where(final_labels == 1,'Abnormal (1)', 'Normal (0)')
+        df_tsne['label_str'] = np.where(final_labels == 0, 'Normal (0)','Abnormal (1)')
         df_tsne['plot_category'] = df_tsne['domain'] + ' - ' + df_tsne['label_str']
 
         # 4. 使用 Seaborn 繪圖
@@ -259,8 +259,8 @@ def main(args):
         custom_palette = {
             'Source - Abnormal (1)': 'red',     # 來源 異常 = 紅色
             'Source - Normal (0)': 'green',   # 來源 正常 = 綠色
-            'Target - Abnormal (1)': 'red', # 目標 異常 = 暗紅色 (仍為紅色系)
-            'Target - Normal (0)': 'green' # 目標 正常 = 亮綠色 (仍為綠色系)
+            'Target - Abnormal (1)': 'orange', # 目標 異常 = 暗紅色 (仍為紅色系)
+            'Target - Normal (0)': 'blue' # 目標 正常 = 亮綠色 (仍為綠色系)
         }
         sns.scatterplot(
             data=df_tsne,
