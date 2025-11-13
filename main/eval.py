@@ -256,18 +256,11 @@ def main(args):
 
         # 4. 使用 Seaborn 繪圖
         plt.figure(figsize=(12, 10))
-        custom_palette = {
-            'Source - Abnormal (1)': 'red',     # 來源 異常 = 紅色
-            'Source - Normal (0)': 'green',   # 來源 正常 = 綠色
-            'Target - Abnormal (1)': 'orange', # 目標 異常 = 暗紅色 (仍為紅色系)
-            'Target - Normal (0)': 'blue' # 目標 正常 = 亮綠色 (仍為綠色系)
-        }
         sns.scatterplot(
             data=df_tsne,
             x='x',
             y='y',
             hue='plot_category', # 顏色
-            palette= custom_palette,
             style='domain',      # 形狀
             s=50,                # 點的大小
             alpha=0.7
