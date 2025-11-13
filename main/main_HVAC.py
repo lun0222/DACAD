@@ -43,7 +43,7 @@ if __name__ == '__main__':
     # 'fan_current_1','lp_comp_1','comp_current_1','outdoor_temp', 'return_air_temp'
 
     # 冷媒洩漏 (Refrigerant Leak Fault)
-    'lp_comp_1','superheat_1','comp_current_1','return_air_temp'   
+    'lp_comp_1','superheat_1','comp_current_1','return_air_temp','outdoor_temp'   
 
     # 壓縮機故障 (Compressor Fault)
     #'cond_current_1','hp_comp_1','comp_current_1','outdoor_temp', 'return_air_temp']   
