@@ -36,17 +36,17 @@ if __name__ == '__main__':
     target_features = [
 
     # 冷凝盤管阻塞 (Condenser Coil Fault)
-    'cond_current_1','hp_comp_1','comp_current_1','outdoor_temp', 'return_air_temp' 
+    # 'cond_current_1','hp_comp_1','comp_current_1','outdoor_temp', 'return_air_temp' 
     # 'lp_comp_1','superheat_1','comp_current_1','outdoor_temp','return_air_temp'   
 
     # 蒸發盤管阻塞 (Evaporator Coil Fault)
     # 'fan_current_1','lp_comp_1','comp_current_1','outdoor_temp', 'return_air_temp'
 
     # 冷媒洩漏 (Refrigerant Leak Fault)
-    # 'lp_comp_1','superheat_1','comp_current_1','return_air_temp','outdoor_temp'   
+    'lp_comp_1','superheat_1','comp_current_1','return_air_temp','outdoor_temp'   
 
     # 壓縮機故障 (Compressor Fault)
-    #'cond_current_1','hp_comp_1','comp_current_1','outdoor_temp', 'return_air_temp']   
+    #'cond_current_1','hp_comp_1','comp_current_1','outdoor_temp', 'return_air_temp'   
 
     # 冷凝風扇故障
     #'cond_current_1','outdoor_temp', 'return_air_temp']   
