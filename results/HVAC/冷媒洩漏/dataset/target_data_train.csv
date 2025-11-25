@@ -1,4 +1,4 @@
-﻿DateTime,hp_comp_1,lp_comp_1,comp_current_1,cond_current_1,fan_current_1,hp_comp_2,lp_comp_2,comp_current_2,cond_current_2,fan_current_2,return_air_temp,outdoor_temp,heater_temp,lp_plate_temp_1,lp_plate_temp_2,superheat_1,superheat_2,comp_start_1,cond_fan_start_1,fan_start_1,comp_start_2,cond_fan_start_2,fan_start_2,heater_start,EF1speed,EF2speed,label
+﻿datetime,hp_comp_1,lp_comp_1,comp_current_1,cond_current_1,fan_current_1,hp_comp_2,lp_comp_2,comp_current_2,cond_current_2,fan_current_2,return_air_temp,outdoor_temp,heater_temp,lp_plate_temp_1,lp_plate_temp_2,superheat_1,superheat_2,comp_start_1,cond_fan_start_1,fan_start_1,comp_start_2,cond_fan_start_2,fan_start_2,heater_start,EF1speed,EF2speed,label
 2025-04-11 13:45:00,21.28,5.33,2.8,0.7,5.6,0.0,0.0,0.0,0.0,0.0,27.9,33.9,17.6,29.1,-128.7,21.1,0.0,1.0,1.0,1.0,0.0,0.0,1.0,0.0,85.0,85.0,0
 2025-04-11 13:45:01,21.27,5.33,2.8,0.7,6.2,0.0,0.0,0.0,0.0,0.0,27.9,33.9,17.6,29.1,-128.7,21.1,0.0,1.0,1.0,1.0,0.0,0.0,1.0,0.0,85.0,85.0,0
 2025-04-11 13:45:02,21.25,5.33,2.8,0.7,5.9,0.0,0.0,0.0,0.0,0.0,27.9,33.9,17.6,29.1,-128.7,21.1,0.0,1.0,1.0,1.0,0.0,0.0,1.0,0.0,85.0,85.0,0
