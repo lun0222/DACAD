@@ -37,26 +37,24 @@ if __name__ == '__main__':
 
     # 冷凝盤管阻塞 (Condenser Coil Fault)
     # 'cond_current_1','hp_comp_1','comp_current_1','outdoor_temp', 'return_air_temp' 
-    # 'lp_comp_1','superheat_1','comp_current_1','outdoor_temp','return_air_temp'   
 
     # 蒸發盤管阻塞 (Evaporator Coil Fault)
     # 'fan_current_1','lp_comp_1','comp_current_1','outdoor_temp', 'return_air_temp'
 
     # 冷媒洩漏 (Refrigerant Leak Fault)
-    'lp_comp_1','superheat_1','comp_current_1','return_air_temp','outdoor_temp'   
+    # 'lp_comp_1','superheat_1','comp_current_1','return_air_temp','outdoor_temp'   
 
     # 壓縮機故障 (Compressor Fault)
-    #'cond_current_1','hp_comp_1','comp_current_1','outdoor_temp', 'return_air_temp'   
+    # 'lp_comp_1','hp_comp_1','comp_current_1','outdoor_temp', 'return_air_temp'   
 
     # 冷凝風扇故障
-    #'cond_current_1','outdoor_temp', 'return_air_temp']   
+    'cond_current_1','outdoor_temp', 'return_air_temp'   
 
     # 蒸發風扇故障
-    #'fan_current_1','outdoor_temp', 'return_air_temp']   
+    # 'fan_current_1','outdoor_temp', 'return_air_temp'   
 
     #加熱器
     #'heater_temp', 'outdoor_temp', 'return_air_temp'
-
     ]
     
     # 4. 明確指定 src 和 trg (只執行 source_data -> target_data)
