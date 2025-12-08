@@ -1,0 +1,70 @@
+Using device: cuda
+Loading source train dataset to get normalization stats...
+Using Mean/Std from Source Train (mean[0]=5.367882554251995, std[0]=0.1251981658707889)
+Loading Source Test...
+Loading Target Test...
+Starting to collect embeddings for t-SNE plot...
+Target results saved to results\HVAC\source_data-target_data\predictions_test_target.csv
+TARGET RESULTS
+loaded from d:\DACAD\datasets\HVAC
+
+AUPRC score is : 0.9993 
+Best F1 score is : 0.9972 
+Best Prec score is : 0.9978 
+Best Rec score is : 0.9967 
+Source results saved to results\HVAC\source_data-target_data\predictions_test_source.csv
+SOURCE RESULTS
+loaded from d:\DACAD\datasets\HVAC
+
+AUPRC score is : 0.9993 
+Best F1 score is : 0.9972 
+Best Prec score is : 0.9978 
+Best Rec score is : 0.9967 
+Generating t-SNE plot...
+Loaded backend tkagg version 8.6.
+STREAM b'IHDR' 16 13
+STREAM b'sBIT' 41 4
+b'sBIT' 41 4 (unknown)
+STREAM b'pHYs' 57 9
+STREAM b'IDAT' 78 1189
+STREAM b'IHDR' 16 13
+STREAM b'sBIT' 41 4
+b'sBIT' 41 4 (unknown)
+STREAM b'pHYs' 57 9
+STREAM b'IDAT' 78 2994
+STREAM b'IHDR' 16 13
+STREAM b'sBIT' 41 4
+b'sBIT' 41 4 (unknown)
+STREAM b'pHYs' 57 9
+STREAM b'IDAT' 78 374
+STREAM b'IHDR' 16 13
+STREAM b'sBIT' 41 4
+b'sBIT' 41 4 (unknown)
+STREAM b'pHYs' 57 9
+STREAM b'IDAT' 78 286
+STREAM b'IHDR' 16 13
+STREAM b'sBIT' 41 4
+b'sBIT' 41 4 (unknown)
+STREAM b'pHYs' 57 9
+STREAM b'IDAT' 78 263
+STREAM b'IHDR' 16 13
+STREAM b'sBIT' 41 4
+b'sBIT' 41 4 (unknown)
+STREAM b'pHYs' 57 9
+STREAM b'IDAT' 78 387
+STREAM b'IHDR' 16 13
+STREAM b'sBIT' 41 4
+b'sBIT' 41 4 (unknown)
+STREAM b'pHYs' 57 9
+STREAM b'IDAT' 78 436
+STREAM b'IHDR' 16 13
+STREAM b'sBIT' 41 4
+b'sBIT' 41 4 (unknown)
+STREAM b'pHYs' 57 9
+STREAM b'IDAT' 78 351
+STREAM b'IHDR' 16 13
+STREAM b'sBIT' 41 4
+b'sBIT' 41 4 (unknown)
+STREAM b'pHYs' 57 9
+STREAM b'IDAT' 78 364
+Error generating t-SNE plot: The palette dictionary is missing keys: {'Source - Abnormal (1)', 'Target - Abnormal (1)', 'Target - Normal (0)', 'Source - Normal (0)'}
