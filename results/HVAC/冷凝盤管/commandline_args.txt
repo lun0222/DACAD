@@ -43,7 +43,7 @@
     "cond_current_1",
     "hp_comp_1",
     "comp_current_1",
-    "outdoor_temp",
-    "return_air_temp"
+    "return_air_temp",
+    "outdoor_temp"
   ]
 }

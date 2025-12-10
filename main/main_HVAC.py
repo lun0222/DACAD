@@ -35,25 +35,25 @@ if __name__ == '__main__':
     # *** 設定特徵 ***
     target_features = [
     # 冷凝盤管阻塞 (Condenser Coil Fault)
-    # 'cond_current_1','hp_comp_1','comp_current_1','outdoor_temp', 'return_air_temp' 
+    # 'cond_current_1','hp_comp_1','comp_current_1','return_air_temp' ,'outdoor_temp'
 
     # 蒸發盤管阻塞 (Evaporator Coil Fault)
-    # 'fan_current_1','lp_comp_1','comp_current_1','outdoor_temp', 'return_air_temp'
+    # 'fan_current_1','lp_comp_1','comp_current_1','superheat_1','return_air_temp','outdoor_temp'
 
     # 冷媒洩漏 (Refrigerant Leak Fault)
-    'lp_comp_1','superheat_1','comp_current_1','return_air_temp','outdoor_temp'   
+    # 'hp_comp_1','lp_comp_1','superheat_1','comp_current_1','return_air_temp','outdoor_temp'
 
     # 壓縮機故障 (Compressor Fault)
-    # 'lp_comp_1','hp_comp_1','comp_current_1','outdoor_temp', 'return_air_temp'   
+    # 'lp_comp_1','hp_comp_1','comp_current_1','cond_current_1','return_air_temp','outdoor_temp'
 
     # 冷凝風扇故障
-    # 'cond_current_1','outdoor_temp', 'return_air_temp'   
+    # 'hp_comp_1','cond_current_1','comp_current_1','return_air_temp','outdoor_temp'
 
     # 蒸發風扇故障
-    # 'fan_current_1','outdoor_temp', 'return_air_temp'   
+    # 'fan_current_1','lp_comp_1','comp_current_1','return_air_temp','outdoor_temp'
 
     #加熱器
-    # 'heater_temp', 'outdoor_temp', 'return_air_temp'
+    'heater_temp','return_air_temp','outdoor_temp'
     ]
     
     # 4. 明確指定 src 和 trg
@@ -137,12 +137,14 @@ if __name__ == '__main__':
     except Exception as e:
         print(f"複製檔案時發生錯誤: {e}")
 
+# ==========================================
+    # 9. --- 5. 新增：繪製 y_score 背景標籤圖 (閾值判斷版) ---
     # ==========================================
-    # 9. --- 5. 新增：繪製 y_score 背景標籤圖 (含區段標示) ---
-    # ==========================================
-    print("--- 5. 正在繪製 y_score 背景標籤圖 (含區段標示) ---")
+    print("--- 5. 正在繪製 y_score 背景標籤圖 (基於最佳閾值著色) ---")
     
     try:
+        from sklearn.metrics import precision_recall_curve
+        
         # 定義讀取的 csv 路徑
         predictions_csv = os.path.join(results_dir, 'predictions_test_source.csv')
         
@@ -151,79 +153,110 @@ if __name__ == '__main__':
             y_score = df['y_pred']
             y_true = df['y']
 
-            # 設定中文字型 (Windows 常用 Microsoft JhengHei, Mac 常用 Arial Unicode MS, Linux 視情況而定)
+            # --- 1. 計算最佳閾值 (Best Threshold) ---
+            precision, recall, thresholds = precision_recall_curve(y_true, y_score)
+            # 計算每個閾值下的 F1 Score
+            numerator = 2 * recall * precision
+            denominator = recall + precision
+            # 避免除以 0
+            f1_scores = np.divide(numerator, denominator, out=np.zeros_like(numerator), where=denominator != 0)
+            
+            # 找出最大 F1 Score 對應的索引
+            best_idx = np.argmax(f1_scores)
+            
+            # 取得最佳閾值 (如果索引超出 thresholds 範圍，取最後一個)
+            if best_idx < len(thresholds):
+                best_thr = thresholds[best_idx]
+            else:
+                best_thr = thresholds[-1]
+            
+            print(f"計算出的最佳閾值 (Best Threshold): {best_thr:.4f}, 最高 F1: {f1_scores[best_idx]:.4f}")
+
+            # --- 2. 開始繪圖 ---
+            # 設定中文字型
             plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'SimHei', 'Arial Unicode MS', 'sans-serif']
-            plt.rcParams['axes.unicode_minus'] = False # 解決負號顯示問題
+            plt.rcParams['axes.unicode_minus'] = False 
 
-            plt.figure(figsize=(16, 8)) # 加大高度以容納標籤
+            plt.figure(figsize=(16, 8))
             plt.plot(y_score, label='y_score (y_pred)', color='blue', linewidth=1)
+            
+            # 畫出閾值線 (方便觀察)
+            plt.axhline(y=best_thr, color='black', linestyle=':', alpha=0.8, label=f'Threshold: {best_thr:.2f}')
 
-            # --- 1. 背景顏色填充邏輯 (根據真實標籤 y) ---
-            y_array = y_true.values
-            n = len(y_array)
+            # --- 3. 背景顏色填充邏輯 (根據 y_pred > best_thr) ---
+            # 產生預測標籤陣列: 大於閾值為 1 (異常/紅色), 小於等於為 0 (正常/綠色)
+            pred_labels = (y_score > best_thr).astype(int).values
+            
+            n = len(pred_labels)
             if n > 0:
                 start_idx = 0
-                current_val = y_array[0]
+                current_val = pred_labels[0]
                 for i in range(1, n):
-                    if y_array[i] != current_val:
+                    if pred_labels[i] != current_val:
+                        # 顏色邏輯：1 (大於閾值) -> 紅色, 0 -> 綠色
                         color = 'red' if current_val == 1 else 'green'
-                        plt.axvspan(start_idx, i, facecolor=color, alpha=0.2)
+                        plt.axvspan(start_idx, i, facecolor=color, alpha=0.3) # 您要求的 alpha=0.3
                         start_idx = i
-                        current_val = y_array[i]
+                        current_val = pred_labels[i]
+                
+                # 繪製最後一段
                 color = 'red' if current_val == 1 else 'green'
-                plt.axvspan(start_idx, n-1, facecolor=color, alpha=0.2)
+                plt.axvspan(start_idx, n-1, facecolor=color, alpha=0.3)
 
-            # --- 2. 標記資料區段 (根據您提供的時間與順序) ---
-            # 根據時間排序後的區段資訊 (假設資料頻率為 1Hz，即每秒一點)
-            # 順序: 09:46(冷凝) -> 11:01(蒸發盤管) -> 14:19(蒸發風扇) -> 14日(正常)
-            
-            # 定義各區段長度 (秒數 = 點數)
-            # 09:46:00 - 10:16:00 = 30分 = 1800秒 (+1點包含頭尾 = 1801點)
-            # 11:01:00 - 11:31:00 = 30分 = 1800秒 (+1點 = 1801點)
-            # 14:19:00 - 14:49:00 = 30分 = 1800秒 (+1點 = 1801點)
-            # 14日 09:00 - 10:00 = 60分 = 3600秒 (+1點 = 3601點)
-
+            # --- 4. 標記資料區段 (保持您原本的區段設定) ---
             segments = [
-                {'name': '冷凝盤管阻塞20%', 'len': 1801},
-                {'name': '蒸發盤管阻塞23%', 'len': 1801},
-                {'name': '蒸發風扇電流90%', 'len': 1801},
-                {'name': '正常資料低溫24度', 'len': 3601},
-                {'name': '冷媒洩漏10%', 'len': 3601},
+
+    # ('2025-04-11 09:14:00', '2025-04-11 09:44:00',1),#冷凝盤管阻塞20%
+    # ('2025-04-11 10:29:00', '2025-04-11 10:59:00',0),#蒸發盤管阻塞10%
+    # ('2025-04-11 13:45:00', '2025-04-11 14:15:00',0),#蒸發風扇電流90%
+    # ('2025-04-14 14:50:00', '2025-04-14 15:50:00',0),#冷媒洩漏20%
+    # ('2026-01-01 00:00:00', '2026-01-01 00:30:00',0),#壓縮機故障10%
+    # ('2026-01-01 02:00:00', '2026-01-01 02:30:00',0),#冷凝風扇電流上升10%
+    # ('2026-01-01 04:00:00', '2026-01-01 04:30:00',0),#蒸發風扇電流上升10%
+
+    # ('2025-04-14 10:45:00', '2025-04-14 11:15:00',0),#加熱器運轉
+    # ('2026-01-01 06:20:00', '2026-01-01 06:40:00',0),#加熱器故障20%
+                # {'name': '冷凝盤管20%', 'len': 1801},
+                # {'name': '蒸發盤管10%', 'len': 1801},
+                # {'name': '冷媒洩漏20%', 'len': 3601},
+                # {'name': '壓縮機10%', 'len': 1801},
+                # {'name': '冷凝風扇10%', 'len': 1801},
+                # {'name': '蒸發風扇10%', 'len': 1801},
+
+                {'name': '加熱器運轉', 'len': 1801},
+                {'name': '加熱器故障20%', 'len': 1201},
+                {'name': '加熱器故障30%', 'len': 1201},
             ]
 
             current_idx = 0
             y_min, y_max = plt.ylim()
-            # 設定文字高度在圖表上方邊緣
             text_y_pos = y_max + (y_max - y_min) * 0.05 
 
             for seg in segments:
                 start = current_idx
-                end = current_idx + seg['len'] - 1 # 減1是因為索引從0開始
-                
-                # 確保不超出實際預測資料長度
-                if start >= n:
-                    break
+                end = current_idx + seg['len'] - 1
+                if start >= n: break
                 draw_end = min(end, n - 1)
 
-                # 1. 繪製區隔線 (虛線)
+                # 繪製區隔線
                 if draw_end < n - 1:
                     plt.axvline(x=draw_end, color='black', linestyle='--', alpha=0.7)
 
-                # 2. 標示文字 (置中)
+                # 標示文字
                 mid_point = (start + draw_end) / 2
                 plt.text(mid_point, text_y_pos, seg['name'], 
-                        ha='center', va='bottom', fontsize=12, fontweight='bold', color='black',
-                        bbox=dict(facecolor='white', alpha=0.7, edgecolor='none')) # 加個白底讓文字更清楚
+                         ha='center', va='bottom', fontsize=12, fontweight='bold', color='black',
+                         bbox=dict(facecolor='white', alpha=0.7, edgecolor='none'))
 
                 current_idx += seg['len']
 
-            plt.title('Predictions Test Source: y_score with Background & Segment Labels')
+            plt.title(f'Predictions Test Source: y_score with Predicted Labels (Thr={best_thr:.3f})')
             plt.xlabel('Index (Time)')
             plt.ylabel('Score')
             plt.legend(loc='upper right')
             plt.tight_layout()
             
-            output_png_name = 'predictions_test_source_marked.png'
+            output_png_name = 'predictions_test_source_marked_thr.png'
             output_png_path = os.path.join(results_dir, output_png_name)
             plt.savefig(output_png_path)
             plt.close()
@@ -231,6 +264,9 @@ if __name__ == '__main__':
             print(f"標記圖表已儲存至: {output_png_path}")
         else:
             print(f"找不到檔案: {predictions_csv}，無法繪製圖表。")
+
+    except Exception as e:
+        print(f"繪製圖表時發生錯誤: {e}")
 
     except Exception as e:
         print(f"繪製圖表時發生錯誤: {e}")

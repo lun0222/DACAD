@@ -43,7 +43,8 @@
     "fan_current_1",
     "lp_comp_1",
     "comp_current_1",
-    "outdoor_temp",
-    "return_air_temp"
+    "superheat_1",
+    "return_air_temp",
+    "outdoor_temp"
   ]
 }
