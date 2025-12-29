@@ -35,31 +35,32 @@ if __name__ == '__main__':
     # *** 設定特徵 ***
     target_features = [
     # 冷凝盤管阻塞 (Condenser Coil Fault)
-    # 'cond_current_1','hp_comp_1','comp_current_1','return_air_temp' ,'outdoor_temp'
+    # 'hp_comp_1','lp_comp_1','cond_current_1','comp_current_1','hp_comp_2','lp_comp_2','cond_current_2','comp_current_2','return_air_temp','outdoor_temp'
 
     # 蒸發盤管阻塞 (Evaporator Coil Fault)
-    # 'fan_current_1','lp_comp_1','comp_current_1','superheat_1','return_air_temp','outdoor_temp'
+    # 'fan_current_1','lp_comp_1','comp_current_1','fan_current_2','lp_comp_2','comp_current_2','return_air_temp','outdoor_temp'
 
     # 冷媒洩漏 (Refrigerant Leak Fault)
-    # 'hp_comp_1','lp_comp_1','superheat_1','comp_current_1','return_air_temp','outdoor_temp'
+    # 'hp_comp_1','lp_comp_1','superheat_1','comp_current_1','hp_comp_2','lp_comp_2','superheat_2','comp_current_2','return_air_temp','outdoor_temp'
 
     # 壓縮機故障 (Compressor Fault)
-    # 'lp_comp_1','hp_comp_1','comp_current_1','cond_current_1','return_air_temp','outdoor_temp'
+    # 'hp_comp_1','comp_current_1','lp_comp_1','hp_comp_2','comp_current_2','lp_comp_2','return_air_temp','outdoor_temp'
 
     # 冷凝風扇故障
-    # 'hp_comp_1','cond_current_1','comp_current_1','return_air_temp','outdoor_temp'
+    # 'hp_comp_1','lp_comp_1','cond_current_1','comp_current_1','hp_comp_2','lp_comp_2','cond_current_2','comp_current_2','return_air_temp','outdoor_temp'
 
     # 蒸發風扇故障
-    # 'fan_current_1','lp_comp_1','comp_current_1','return_air_temp','outdoor_temp'
+    # 'fan_current_1','hp_comp_1','lp_comp_1','comp_current_1','fan_current_2','hp_comp_2','lp_comp_2','comp_current_2','return_air_temp','outdoor_temp'
 
     #加熱器
-    'heater_temp','return_air_temp','outdoor_temp'
+    # 'heater_temp','return_air_temp','outdoor_temp'
     ]
     
     # 4. 明確指定 src 和 trg
     src = "source_data"
     trg = "target_data"
     
+
     # 2. 定義結果資料夾的變數
     experiments_main_folder = 'results'
     experiment_folder = 'HVAC'
@@ -205,17 +206,6 @@ if __name__ == '__main__':
 
             # --- 4. 標記資料區段 (保持您原本的區段設定) ---
             segments = [
-
-    # ('2025-04-11 09:14:00', '2025-04-11 09:44:00',1),#冷凝盤管阻塞20%
-    # ('2025-04-11 10:29:00', '2025-04-11 10:59:00',0),#蒸發盤管阻塞10%
-    # ('2025-04-11 13:45:00', '2025-04-11 14:15:00',0),#蒸發風扇電流90%
-    # ('2025-04-14 14:50:00', '2025-04-14 15:50:00',0),#冷媒洩漏20%
-    # ('2026-01-01 00:00:00', '2026-01-01 00:30:00',0),#壓縮機故障10%
-    # ('2026-01-01 02:00:00', '2026-01-01 02:30:00',0),#冷凝風扇電流上升10%
-    # ('2026-01-01 04:00:00', '2026-01-01 04:30:00',0),#蒸發風扇電流上升10%
-
-    # ('2025-04-14 10:45:00', '2025-04-14 11:15:00',0),#加熱器運轉
-    # ('2026-01-01 06:20:00', '2026-01-01 06:40:00',0),#加熱器故障20%
                 # {'name': '冷凝盤管20%', 'len': 1801},
                 # {'name': '蒸發盤管10%', 'len': 1801},
                 # {'name': '冷媒洩漏20%', 'len': 3601},
@@ -223,9 +213,9 @@ if __name__ == '__main__':
                 # {'name': '冷凝風扇10%', 'len': 1801},
                 # {'name': '蒸發風扇10%', 'len': 1801},
 
-                {'name': '加熱器運轉', 'len': 1801},
-                {'name': '加熱器故障20%', 'len': 1201},
-                {'name': '加熱器故障30%', 'len': 1201},
+                # {'name': '加熱器運轉', 'len': 1801},
+                # {'name': '加熱器故障20%', 'len': 1201},
+                # {'name': '加熱器故障30%', 'len': 1201},
             ]
 
             current_idx = 0
