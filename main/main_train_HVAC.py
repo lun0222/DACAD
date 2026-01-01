@@ -50,7 +50,7 @@ if __name__ == '__main__':
     # 'hp_comp_1','lp_comp_1','cond_current_1','comp_current_1','hp_comp_2','lp_comp_2','cond_current_2','comp_current_2','return_air_temp','outdoor_temp'
 
     # 蒸發風扇故障
-    # 'fan_current_1','hp_comp_1','lp_comp_1','comp_current_1','fan_current_2','hp_comp_2','lp_comp_2','comp_current_2','return_air_temp','outdoor_temp'
+    'fan_current_1','hp_comp_1','lp_comp_1','comp_current_1','fan_current_2','hp_comp_2','lp_comp_2','comp_current_2','return_air_temp','outdoor_temp'
 
     #加熱器
     # 'heater_temp','return_air_temp','outdoor_temp'
@@ -139,9 +139,9 @@ if __name__ == '__main__':
         print(f"複製檔案時發生錯誤: {e}")
 
 # ==========================================
-    # 9. --- 5. 新增：繪製 y_score 背景標籤圖 (閾值判斷版) ---
+    # 9. --- 5. 新增：繪製 y_score 背景標籤圖 (每個 Segment 獨立一張圖) ---
     # ==========================================
-    print("--- 5. 正在繪製 y_score 背景標籤圖 (基於最佳閾值著色) ---")
+    print("--- 5. 正在繪製 y_score 背景標籤圖 (基於最佳閾值著色 - 獨立分圖版) ---")
     
     try:
         from sklearn.metrics import precision_recall_curve
@@ -156,16 +156,11 @@ if __name__ == '__main__':
 
             # --- 1. 計算最佳閾值 (Best Threshold) ---
             precision, recall, thresholds = precision_recall_curve(y_true, y_score)
-            # 計算每個閾值下的 F1 Score
             numerator = 2 * recall * precision
             denominator = recall + precision
-            # 避免除以 0
             f1_scores = np.divide(numerator, denominator, out=np.zeros_like(numerator), where=denominator != 0)
             
-            # 找出最大 F1 Score 對應的索引
             best_idx = np.argmax(f1_scores)
-            
-            # 取得最佳閾值 (如果索引超出 thresholds 範圍，取最後一個)
             if best_idx < len(thresholds):
                 best_thr = thresholds[best_idx]
             else:
@@ -173,95 +168,109 @@ if __name__ == '__main__':
             
             print(f"計算出的最佳閾值 (Best Threshold): {best_thr:.4f}, 最高 F1: {f1_scores[best_idx]:.4f}")
 
-            # --- 2. 開始繪圖 ---
+            # --- 2. 定義 Segments (請確認與您的資料順序一致) ---
+            segments = [
+    # ('2024-11-08 08:53:00', '2024-11-08 10:00:00',1),#冷凝故障20
+    # ('2024-11-08 09:50:00', '2024-11-08 10:55:00',1),#冷凝故障30
+    # ('2024-11-08 11:00:00', '2024-11-08 12:00:00',0),#蒸發故障10
+    # ('2024-11-14 13:20:00', '2024-11-14 14:55:00',0),#正常(蒸發風扇)
+    # ('2025-02-14 10:50:00', '2025-02-14 11:50:00',0),#洩漏故障20
+    # ('2025-03-01 00:00:14', '2025-03-01 01:58:00',0),#壓縮機故障10
+    # ('2025-03-01 06:00:14', '2025-03-01 07:58:00',0),#冷凝扇故障10
+    # ('2025-03-01 12:00:14', '2025-03-01 13:58:00',0),#蒸發扇故障10
+                {'name': '冷凝盤管20%', 'len': 4021},
+                {'name': '冷凝故障30%', 'len': 3901},
+                {'name': '蒸發故障10%', 'len': 3601},
+                {'name': '正常(蒸發風扇)', 'len': 5701},
+                {'name': '洩漏故障20%', 'len': 3601},
+                {'name': '壓縮機10%', 'len': 7066},
+                {'name': '冷凝風扇10%', 'len': 7066},
+                {'name': '蒸發風扇10%', 'len': 7066},
+                # 若有加熱器相關，請自行加入
+                # {'name': '加熱器運轉', 'len': 1801},
+            ]
+
             # 設定中文字型
             plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'SimHei', 'Arial Unicode MS', 'sans-serif']
             plt.rcParams['axes.unicode_minus'] = False 
 
-            plt.figure(figsize=(16, 8))
-            plt.plot(y_score, label='y_score (y_pred)', color='blue', linewidth=1)
-            
-            # 畫出閾值線 (方便觀察)
-            plt.axhline(y=best_thr, color='black', linestyle=':', alpha=0.8, label=f'Threshold: {best_thr:.2f}')
+            current_idx = 0 # 用來追蹤全域的索引位置
 
-            # --- 3. 背景顏色填充邏輯 (根據 y_pred > best_thr) ---
-            # 產生預測標籤陣列: 大於閾值為 1 (異常/紅色), 小於等於為 0 (正常/綠色)
-            pred_labels = (y_score > best_thr).astype(int).values
-            
-            n = len(pred_labels)
-            if n > 0:
-                start_idx = 0
-                current_val = pred_labels[0]
-                for i in range(1, n):
-                    if pred_labels[i] != current_val:
-                        # 顏色邏輯：1 (大於閾值) -> 紅色, 0 -> 綠色
-                        color = 'red' if current_val == 1 else 'green'
-                        plt.axvspan(start_idx, i, facecolor=color, alpha=0.3) # 您要求的 alpha=0.3
-                        start_idx = i
-                        current_val = pred_labels[i]
+            # --- 3. 迴圈遍歷每個 Segment 並獨立繪圖 ---
+            for i, seg in enumerate(segments):
+                seg_name = seg['name']
+                seg_len = seg['len']
                 
-                # 繪製最後一段
-                color = 'red' if current_val == 1 else 'green'
-                plt.axvspan(start_idx, n-1, facecolor=color, alpha=0.3)
-
-            # --- 4. 標記資料區段 (保持您原本的區段設定) ---
-            segments = [
-                # {'name': '冷凝盤管20%', 'len': 1801},
-                # {'name': '蒸發盤管10%', 'len': 1801},
-                # {'name': '冷媒洩漏20%', 'len': 3601},
-                # {'name': '壓縮機10%', 'len': 1801},
-                # {'name': '冷凝風扇10%', 'len': 1801},
-                # {'name': '蒸發風扇10%', 'len': 1801},
-
-                # {'name': '加熱器運轉', 'len': 1801},
-                # {'name': '加熱器故障20%', 'len': 1201},
-                # {'name': '加熱器故障30%', 'len': 1201},
-            ]
-
-            current_idx = 0
-            y_min, y_max = plt.ylim()
-            text_y_pos = y_max + (y_max - y_min) * 0.05 
-
-            for seg in segments:
+                # 計算該 Segment 在原始資料中的起訖點
                 start = current_idx
-                end = current_idx + seg['len'] - 1
-                if start >= n: break
-                draw_end = min(end, n - 1)
+                end = current_idx + seg_len
+                
+                # 確保不超出資料範圍
+                if start >= len(y_score):
+                    print(f"警告：Segment '{seg_name}' 超出資料範圍，停止繪圖。")
+                    break
+                
+                real_end = min(end, len(y_score))
+                
+                # 切片 (Slice) 取得該區段的數據
+                # 注意：reset_index(drop=True) 讓 x 軸從 0 開始，或是保留 index 看全域時間
+                # 這裡我們使用全域 index (start ~ real_end) 來畫 x 軸，方便對照原始資料
+                seg_y_score = y_score[start:real_end]
+                seg_indices = np.arange(start, real_end)
+                
+                # 開始繪圖
+                plt.figure(figsize=(12, 6))
+                plt.plot(seg_indices, seg_y_score, label='y_score', color='blue', linewidth=1.5)
+                
+                # 畫閾值線
+                plt.axhline(y=best_thr, color='black', linestyle=':', alpha=0.8, label=f'Threshold: {best_thr:.2f}')
+                
+                # 背景顏色填充 (針對這個片段)
+                pred_labels_seg = (seg_y_score > best_thr).astype(int).values
+                n_seg = len(pred_labels_seg)
+                
+                if n_seg > 0:
+                    local_start_idx = 0
+                    current_val = pred_labels_seg[0]
+                    
+                    for k in range(1, n_seg):
+                        if pred_labels_seg[k] != current_val:
+                            color = 'red' if current_val == 1 else 'green'
+                            # 注意 x 座標要加上全域的 start
+                            plt.axvspan(start + local_start_idx, start + k, facecolor=color, alpha=0.3)
+                            
+                            local_start_idx = k
+                            current_val = pred_labels_seg[k]
+                    
+                    # 畫最後一段
+                    color = 'red' if current_val == 1 else 'green'
+                    plt.axvspan(start + local_start_idx, start + n_seg - 1, facecolor=color, alpha=0.3)
 
-                # 繪製區隔線
-                if draw_end < n - 1:
-                    plt.axvline(x=draw_end, color='black', linestyle='--', alpha=0.7)
+                plt.title(f"Segment {i+1}: {seg_name} (Thr={best_thr:.3f})")
+                plt.xlabel('Global Index (Time)')
+                plt.ylabel('Score')
+                plt.legend(loc='upper right')
+                plt.tight_layout()
+                
+                # 處理檔名 (去除特殊符號避免錯誤)
+                safe_name = seg_name.replace('%', 'pct').replace(' ', '_').replace('/', '_')
+                output_filename = f'segment_{i+1:02d}_{safe_name}.png'
+                output_path = os.path.join(results_dir, output_filename)
+                
+                plt.savefig(output_path)
+                plt.close() # 關閉畫布以釋放記憶體
+                
+                print(f"  -> 已儲存: {output_filename}")
+                
+                # 更新下一個區段的起始點
+                current_idx += seg_len
 
-                # 標示文字
-                mid_point = (start + draw_end) / 2
-                plt.text(mid_point, text_y_pos, seg['name'], 
-                         ha='center', va='bottom', fontsize=12, fontweight='bold', color='black',
-                         bbox=dict(facecolor='white', alpha=0.7, edgecolor='none'))
-
-                current_idx += seg['len']
-
-            plt.title(f'Predictions Test Source: y_score with Predicted Labels (Thr={best_thr:.3f})')
-            plt.xlabel('Index (Time)')
-            plt.ylabel('Score')
-            plt.legend(loc='upper right')
-            plt.tight_layout()
-            
-            output_png_name = 'predictions_test_source_marked_thr.png'
-            output_png_path = os.path.join(results_dir, output_png_name)
-            plt.savefig(output_png_path)
-            plt.close()
-            
-            print(f"標記圖表已儲存至: {output_png_path}")
         else:
             print(f"找不到檔案: {predictions_csv}，無法繪製圖表。")
 
     except Exception as e:
         print(f"繪製圖表時發生錯誤: {e}")
-
-    except Exception as e:
-        print(f"繪製圖表時發生錯誤: {e}")
-
-    except Exception as e:
-        print(f"繪製自訂圖表時發生錯誤: {e}")
+        import traceback
+        traceback.print_exc()
 
     print(f"======= HVAC 實驗全部完成 (src: {src}, trg: {trg}) =======")
