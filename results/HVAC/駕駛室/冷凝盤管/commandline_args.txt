@@ -40,8 +40,9 @@
   "log": "train.log",
   "seed": 1234,
   "features": [
-    "cond_current_1",
     "hp_comp_1",
+    "lp_comp_1",
+    "cond_current_1",
     "comp_current_1",
     "return_air_temp",
     "outdoor_temp"

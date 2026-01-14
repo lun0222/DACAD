@@ -211,8 +211,8 @@ class HVACDataset_trg(Dataset):
         self.load_sequence() # 載入並處理資料
         
         self.sequence , self.label = self.convert_to_windows(self.w, self.s)
-        self.positive = self.sequence[self.label == 1]
-        self.negative = self.sequence[self.label == 0]
+        self.positive = self.sequence[self.label == 0]
+        self.negative = self.sequence[self.label == 1]
 
     def __len__(self):
         return len(self.sequence)
