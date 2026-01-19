@@ -1,0 +1,2 @@
+src_id,trg_id,threshold,precision,recall,f1,accuracy,auroc,auprc,TP,TN,FP,FN
+source_data,target_data,1.99,1.0,0.9969520642837351,0.998473706119051,0.9995633707775969,0.9999220634066757,0.9997424158421563,3598,21584,0,11

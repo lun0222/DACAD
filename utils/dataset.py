@@ -81,8 +81,8 @@ class HVACDataset(Dataset):
         self.sequence , self.label = self.convert_to_windows(self.w, self.s)
         
         # 你的 val 檔案現在保證有 0 和 1, 不會再崩潰
-        self.positive = self.sequence[self.label == 1]
-        self.negative = self.sequence[self.label == 0]
+        self.positive = self.sequence[self.label == 0]
+        self.negative = self.sequence[self.label == 1]
 
     def __len__(self):
         return len(self.sequence)
@@ -189,7 +189,7 @@ class HVACDataset(Dataset):
 
 class HVACDataset_trg(Dataset):
     def __init__(self, root_dir, subject_id, split_type="train", is_cuda=True, verbose=False,
-                 feature_columns=None, w_size=10, stride=1,
+                 feature_columns=None, w_size=100, stride=1,
                  d_mean=None, d_std=None): # <-- 1. 新增 d_mean, d_std 參數
         
         self.root_dir = root_dir

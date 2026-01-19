@@ -35,7 +35,7 @@ if __name__ == '__main__':
     # *** 設定特徵 ***
     target_features = [
     # 冷凝盤管阻塞 (Condenser Coil Fault)
-    # 'hp_comp_1','lp_comp_1','cond_current_1','comp_current_1','return_air_temp' ,'outdoor_temp'
+    'hp_comp_1','lp_comp_1','cond_current_1','comp_current_1','return_air_temp' ,'outdoor_temp'
 
     # 蒸發盤管阻塞 (Evaporator Coil Fault)
     # 'fan_current_1','hp_comp_1','lp_comp_1','comp_current_1','return_air_temp','outdoor_temp','EF1speed'
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     # 'hp_comp_1','cond_current_1','comp_current_1','return_air_temp','outdoor_temp'
 
     # 蒸發風扇故障
-    'fan_current_1','hp_comp_1','lp_comp_1','comp_current_1','return_air_temp','outdoor_temp'
+    # 'fan_current_1','hp_comp_1','lp_comp_1','comp_current_1','return_air_temp','outdoor_temp'
 
     #加熱器
     # 'heater_temp','return_air_temp','outdoor_temp'
@@ -171,9 +171,10 @@ if __name__ == '__main__':
             # --- 2. 定義 Segments (請確認與您的資料順序一致) ---
             segments = [
 
-
                 {'name': '冷凝盤管阻塞20%', 'len': 1800},
                 {'name': '蒸發盤管阻塞20%', 'len': 1800},
+                # {'name': '冷媒洩漏10%', 'len': 3600},
+                # {'name': '冷媒洩漏20%', 'len': 3600},
                 {'name': '重度冷凝盤管阻塞', 'len': 1800},
                 {'name': '冷媒洩漏30%', 'len': 3600},
                 {'name': '壓縮機故障20%', 'len': 5400},
